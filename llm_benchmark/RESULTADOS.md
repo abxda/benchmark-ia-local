@@ -331,7 +331,7 @@ MoE 25.2B totales / **3.8B activos**, UD-Q4_K_XL de 17.0 GB, llama.cpp b10107 CP
 ## Perfil `desktop-tr3990x-rtx3060-12gb-cuda` — estreno y ancla (2026-07-28)
 
 > Sección de perfil NO-referencia (ver ETHOS.md): esta máquina explora y acelera;
-> las recomendaciones siguen saliendo del perfil `laptop-inegi-ultra5-32gb-1dimm`.
+> las recomendaciones siguen saliendo del perfil `laptop-ref-ultra5-32gb-1dimm`.
 
 Hardware: Threadripper 3990X (64c) · 256 GB DDR4 · RTX 3060 12 GB · Ubuntu 26.04.
 Stack: llama.cpp **b10155 CUDA**, Zero 0.5.0, mismos prompts/checkers/turnos que la laptop.
@@ -387,7 +387,7 @@ comparación de configs: el ancla corrió con `-t 16` + mmap y n-cpu-moe 22, Qwo
 `-t 32` + no-mmap y 20 — parte de la ventaja de tiempo puede ser infra, no modelo.
 
 **Pendiente para decidir algo** (regla ETHOS: la laptop decide): revalidar en el perfil
-`laptop-inegi-ultra5-32gb-1dimm`. El I-Compact de 17.3 GB cabe en los 32 GB de RAM de
+`laptop-ref-ultra5-32gb-1dimm`. El I-Compact de 17.3 GB cabe en los 32 GB de RAM de
 la laptop en CPU puro, mismo régimen que el campeón (17 GB).
 
 ## Reproducir

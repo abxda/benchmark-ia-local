@@ -2,7 +2,7 @@
 
 **Alertas en español de lanzamientos de modelos de IA** — europeos, chinos, americanos, open y closed weights. Detecta, verifica, clasifica y distribuye, casi gratis de operar.
 
-Una herramienta de A2 Big Data · abxda × Fable.
+abxda × Fable.
 
 ---
 

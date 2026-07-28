@@ -1,4 +1,4 @@
-# Benchmark de IA local — laptop INEGI
+# Benchmark de IA local — laptop institucional
 
 Evaluación empírica y reproducible de modelos de lenguaje abiertos corriendo localmente
 (Intel Core Ultra 5 225H, 32 GB DDR5 canal único, Windows 11) para programación en

@@ -4,7 +4,7 @@ Puerto de pruebas ágil del benchmark en una máquina Linux con GPU modesta
 (RTX 3060 12 GB). El rol de este perfil, según [ETHOS.md](../ETHOS.md), es
 **explorar y acelerar**: iterar rápido sobre modelos pequeños y candidatos
 nuevos. La recomendación del proyecto la sigue decidiendo el perfil de
-referencia (`laptop-inegi-ultra5-32gb-1dimm`); lo que brille aquí se
+referencia (`laptop-ref-ultra5-32gb-1dimm`); lo que brille aquí se
 re-valida después en la laptop, a su velocidad real.
 
 ## Máquina

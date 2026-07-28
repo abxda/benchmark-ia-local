@@ -44,7 +44,7 @@ BENCH_PROFILE=workstation-rtx4090-64gb python bench.py <modelo>
 
 | | |
 |---|---|
-| `laptop-inegi-ultra5-32gb-1dimm` | Intel Core Ultra 5 225H · 32 GB DDR5 **canal único** · sin GPU dedicada · Windows 11 · llama.cpp solo CPU |
+| `laptop-ref-ultra5-32gb-1dimm` | Intel Core Ultra 5 225H · 32 GB DDR5 **canal único** · sin GPU dedicada · Windows 11 · llama.cpp solo CPU |
 
 Un perfil nuevo **agrega** una columna o una sección. Nunca reemplaza a este ni reescribe sus conclusiones.
 

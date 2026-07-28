@@ -86,6 +86,6 @@ Protocolo detallado y checklist en [SEGUIMIENTO.md](llm_benchmark/SEGUIMIENTO.md
 
 ## Contexto
 
-Trabajo hecho en el **INEGI** para evaluar la IA local en equipo institucional como alternativa sin costo de licenciamiento a los asistentes comerciales de programación. Los datos del benchmark son sintéticos y reproducibles; el caso de validación adicional usa datos abiertos públicos del ITAEE.
+Trabajo para evaluar la IA local en equipo institucional como alternativa sin costo de licenciamiento a los asistentes comerciales de programación. Los datos del benchmark son sintéticos y reproducibles; el caso de validación adicional usa datos abiertos públicos del ITAEE.
 
-Una herramienta de A2 Big Data · [abxda](https://github.com/abxda)
+[abxda](https://github.com/abxda)

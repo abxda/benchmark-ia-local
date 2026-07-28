@@ -1,4 +1,4 @@
-# LLMs de código abierto para coding agéntico local en laptops INEGI (Intel Arrow Lake) — Estado del arte a julio de 2026
+# LLMs de código abierto para coding agéntico local en laptops institucionales (Intel Arrow Lake) — Estado del arte a julio de 2026
 
 ## TL;DR
 - **El mejor conjunto para esta laptop es Qwen3-Coder-30B-A3B-Instruct (MoE 30.5B / 3.3B activos) a Q4_K_M (~18.7 GB) como agente principal, más Qwen2.5-Coder-1.5B para autocompletado**, ejecutados con **LM Studio o llama.cpp con backend Vulkan** y conectados a **Cline (con "compact prompt")** o **Continue.dev**. Es el único punto de equilibrio realista entre capacidad agéntica y velocidad en 32 GB de RAM sin GPU NVIDIA.
@@ -30,13 +30,13 @@
 
 Otros a considerar para casos ligeros: **CodeGemma/Gemma**, **Granite Code (IBM)**, **StarCoder2** (fuerte en lenguajes de bajo recurso), **Phi-4** (14B, 128K, "el LLM local más accesible" según Hugging Face blog).
 
-### 2. Soporte para R (crítico para el INEGI)
+### 2. Soporte para R (crítico para la práctica estadística)
 
 R es un lenguaje de bajo recurso para los LLMs. Datos duros (Zhao & Fard, arXiv 2410.07793, HumanEval-R): StarCoder2-7B ~19.65% Pass@1 y CodeLlama-7B ~20.50%, vs ~29% y ~26% en Python. El informe técnico de Qwen2.5-Coder ni siquiera incluye R en su tabla MultiPL-E (solo 8 lenguajes: Python, C++, Java, PHP, TS, C#, Bash, JS); su cobertura de R solo se infiere del agregado McEval (65.9). StarCoder2 destacó en lenguajes de bajo recurso y su corpus (Stack v2) incluyó 22 GB de R.
 
 Posit evaluó modelos con su paquete `vitals` y el dataset `are`: recomienda GPT-5, o4-mini o Claude Sonnet 4 para R, y anota que *"Anecdotally, many R programmers seem to prefer Claude Sonnet to OpenAI's models."* Probaron modelos abiertos (gpt-oss-120b y 20b) y quedaron por debajo de los mejores de pago. Simon Couch (Posit) con su `helperbench` encontró que en dic-2025 los modelos locales (Qwen 3 14B, GPT-OSS 20B, Mistral 3.1 24B) puntuaban **~0%** en tareas agénticas de R, mientras que para abr-2026 Qwen 3.5 35B-A3B y Gemma 4 26B-A4B alcanzaban **~90%** (*"Gemma 4 and Qwen 3.5 got it right all but one time"*).
 
-**Conclusión para INEGI:** usar Qwen3-Coder-30B como mejor opción local para R hoy, pero con revisión humana obligatoria del código estadístico (la brecha Python→R es amplia y persistente). Si el hardware se amplía, evaluar los MoE más nuevos (Qwen 3.5 35B-A3B, Gemma 4), que representan el nuevo frontera local en R.
+**Conclusión:** usar Qwen3-Coder-30B como mejor opción local para R hoy, pero con revisión humana obligatoria del código estadístico (la brecha Python→R es amplia y persistente). Si el hardware se amplía, evaluar los MoE más nuevos (Qwen 3.5 35B-A3B, Gemma 4), que representan el nuevo frontera local en R.
 
 ### 3. Capacidades agénticas y tool-calling
 
@@ -68,7 +68,7 @@ En este hardware (Arc 130T con 7 núcleos Xe2 a 2.2 GHz; RAM DDR5-5600 en **cana
 
 ### 7. Consideraciones de despliegue gubernamental
 
-- **Privacidad**: la ejecución 100% local mantiene los microdatos y datos estadísticos sensibles del INEGI en el equipo, sin enviarlos a ninguna nube (crítico para estadística oficial y secreto estadístico). Las licencias Apache-2.0 (Qwen3-Coder, Qwen2.5-Coder, Devstral Small 2) permiten uso institucional/comercial sin restricciones ni tarifas.
+- **Privacidad**: la ejecución 100% local mantiene los microdatos y datos estadísticos sensibles en el equipo, sin enviarlos a ninguna nube (crítico para estadística oficial y secreto estadístico). Las licencias Apache-2.0 (Qwen3-Coder, Qwen2.5-Coder, Devstral Small 2) permiten uso institucional/comercial sin restricciones ni tarifas.
 - **Funcionamiento sin conexión**: todos los runtimes recomendados operan completamente offline tras descargar los pesos una vez.
 - **Estandarización**: LM Studio + un modelo GGUF fijo es fácil de replicar en muchas laptops idénticas. Congelar y documentar la versión exacta de runtime, driver gráfico y driver NPU para evitar regresiones y los bugs de Vulkan en Arrow Lake. Distribuir los GGUF vía un repositorio interno para evitar descargas desde internet en cada equipo.
 

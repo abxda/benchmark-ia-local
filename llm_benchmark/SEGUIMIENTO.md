@@ -1,4 +1,4 @@
-# Seguimiento — IA local en laptop INEGI
+# Seguimiento — IA local en laptop institucional
 
 Bitácora viva del proyecto. Actualizar cada vez que se pruebe un modelo, harness o
 configuración nueva. Última actualización: **2026-07-24**.

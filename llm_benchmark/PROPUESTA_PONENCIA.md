@@ -2,15 +2,14 @@
 
 ## Nombre de la ponencia
 
-**Inteligencia artificial local en el INEGI: resultados del taller de vibe coding y evaluación de modelos abiertos en equipo institucional como alternativa a las licencias comerciales**
+**Inteligencia artificial local en la práctica estadística: resultados del taller de vibe coding y evaluación de modelos abiertos en equipo institucional como alternativa a las licencias comerciales**
 
-*(Versión corta para programa: "IA local en el INEGI: del taller de vibe coding a la evidencia empírica")*
+*(Versión corta para programa: "IA local: del taller de vibe coding a la evidencia empírica")*
 
 ## Objetivo
 
 Presentar los resultados del taller de vibe coding y los avances en la ejecución de
-modelos de lenguaje de código abierto corriendo **localmente en una laptop institucional
-del INEGI**, como alternativa sin costo de licenciamiento a los asistentes de
+modelos de lenguaje de código abierto corriendo **localmente en una laptop institucional**, como alternativa sin costo de licenciamiento a los asistentes de
 programación comerciales. Se expondrá la evidencia empírica obtenida mediante un
 benchmark reproducible de tareas reales de la práctica estadística —automatización de
 Excel, generación de dashboards y análisis de series de tiempo, en Python y en R—

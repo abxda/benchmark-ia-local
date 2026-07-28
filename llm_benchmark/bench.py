@@ -24,7 +24,7 @@ RSCRIPT = os.environ.get(
 )
 # Identifica la maquina donde se corre: queda grabado en cada JSON de resultados
 # para que las mediciones de equipos distintos nunca se confundan entre si.
-PROFILE = os.environ.get("BENCH_PROFILE", "laptop-inegi-ultra5-32gb-1dimm")
+PROFILE = os.environ.get("BENCH_PROFILE", "laptop-ref-ultra5-32gb-1dimm")
 GEN_TIMEOUT = 900  # s por llamada de generacion
 EXEC_TIMEOUT = 300  # s por ejecucion de script generado
 
