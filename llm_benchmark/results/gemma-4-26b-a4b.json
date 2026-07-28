@@ -1,0 +1,115 @@
+{
+  "model": "gemma-4-26b-a4b",
+  "speed": {
+    "corto": [
+      {
+        "wall_s": 52.9,
+        "prompt_tokens": 33,
+        "gen_tokens": 512,
+        "prefill_tok_s": 36.53,
+        "decode_tok_s": 10.26,
+        "load_s": null
+      },
+      {
+        "wall_s": 52.3,
+        "prompt_tokens": 33,
+        "gen_tokens": 512,
+        "prefill_tok_s": 42.58,
+        "decode_tok_s": 10.35,
+        "load_s": null
+      }
+    ],
+    "largo": [
+      {
+        "wall_s": 122.9,
+        "prompt_tokens": 2793,
+        "gen_tokens": 512,
+        "prefill_tok_s": 45.85,
+        "decode_tok_s": 8.55,
+        "load_s": null
+      },
+      {
+        "wall_s": 123.9,
+        "prompt_tokens": 2793,
+        "gen_tokens": 512,
+        "prefill_tok_s": 45.69,
+        "decode_tok_s": 8.43,
+        "load_s": null
+      }
+    ]
+  },
+  "tasks": {
+    "excel_py": {
+      "gen": {
+        "wall_s": 27.2,
+        "prompt_tokens": 114,
+        "gen_tokens": 223,
+        "prefill_tok_s": 42.29,
+        "decode_tok_s": 10.28,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "excel_r": {
+      "gen": {
+        "wall_s": 19.5,
+        "prompt_tokens": 127,
+        "gen_tokens": 151,
+        "prefill_tok_s": 44.02,
+        "decode_tok_s": 10.4,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "dash_py": {
+      "gen": {
+        "wall_s": 70.7,
+        "prompt_tokens": 120,
+        "gen_tokens": 666,
+        "prefill_tok_s": 48.01,
+        "decode_tok_s": 10.08,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "dash_r": {
+      "gen": {
+        "wall_s": 38.3,
+        "prompt_tokens": 138,
+        "gen_tokens": 342,
+        "prefill_tok_s": 49.92,
+        "decode_tok_s": 10.24,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_py": {
+      "gen": {
+        "wall_s": 59.3,
+        "prompt_tokens": 148,
+        "gen_tokens": 542,
+        "prefill_tok_s": 47.56,
+        "decode_tok_s": 10.02,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_r": {
+      "gen": {
+        "wall_s": 47.7,
+        "prompt_tokens": 151,
+        "gen_tokens": 432,
+        "prefill_tok_s": 50.87,
+        "decode_tok_s": 10.15,
+        "load_s": null
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nError en ultima_fecha %m+% months(1): \n  no se pudo encontrar la funciÃ³n \"%m+%\"\nCalls: seq\nEjecuciÃ³n interrumpida\n"
+    }
+  }
+}

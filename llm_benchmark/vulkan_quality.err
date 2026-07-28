@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "D:\ProgramacionLocal\llm_benchmark\bench.py", line 324, in <module>
+    main()
+  File "D:\ProgramacionLocal\llm_benchmark\bench.py", line 289, in main
+    _, m = generate(model, prompt, num_predict=512)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ProgramacionLocal\llm_benchmark\bench.py", line 63, in generate
+    return generate_llama(model, prompt, num_predict)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ProgramacionLocal\llm_benchmark\bench.py", line 44, in generate_llama
+    r.raise_for_status()
+  File "C:\Users\abel.coronado\AppData\Local\Programs\Python\Python311\Lib\site-packages\requests\models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: http://localhost:8080/v1/chat/completions

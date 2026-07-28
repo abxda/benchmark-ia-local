@@ -1,0 +1,115 @@
+{
+  "model": "kat-coder-35b-iq4xs",
+  "speed": {
+    "corto": [
+      {
+        "wall_s": 25.6,
+        "prompt_tokens": 37,
+        "gen_tokens": 293,
+        "prefill_tok_s": 42.29,
+        "decode_tok_s": 12.97,
+        "load_s": null
+      },
+      {
+        "wall_s": 24.8,
+        "prompt_tokens": 37,
+        "gen_tokens": 293,
+        "prefill_tok_s": 49.82,
+        "decode_tok_s": 13.37,
+        "load_s": null
+      }
+    ],
+    "largo": [
+      {
+        "wall_s": 90.6,
+        "prompt_tokens": 2512,
+        "gen_tokens": 512,
+        "prefill_tok_s": 52.42,
+        "decode_tok_s": 12.61,
+        "load_s": null
+      },
+      {
+        "wall_s": 86.2,
+        "prompt_tokens": 2512,
+        "gen_tokens": 512,
+        "prefill_tok_s": 56.52,
+        "decode_tok_s": 12.9,
+        "load_s": null
+      }
+    ]
+  },
+  "tasks": {
+    "excel_py": {
+      "gen": {
+        "wall_s": 12.2,
+        "prompt_tokens": 111,
+        "gen_tokens": 107,
+        "prefill_tok_s": 51.62,
+        "decode_tok_s": 13.6,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "excel_r": {
+      "gen": {
+        "wall_s": 9.9,
+        "prompt_tokens": 123,
+        "gen_tokens": 77,
+        "prefill_tok_s": 60.18,
+        "decode_tok_s": 13.42,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "dash_py": {
+      "gen": {
+        "wall_s": 19.2,
+        "prompt_tokens": 116,
+        "gen_tokens": 208,
+        "prefill_tok_s": 59.49,
+        "decode_tok_s": 13.76,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "dash_r": {
+      "gen": {
+        "wall_s": 24.3,
+        "prompt_tokens": 136,
+        "gen_tokens": 267,
+        "prefill_tok_s": 59.75,
+        "decode_tok_s": 13.44,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_py": {
+      "gen": {
+        "wall_s": 16.4,
+        "prompt_tokens": 141,
+        "gen_tokens": 164,
+        "prefill_tok_s": 58.2,
+        "decode_tok_s": 13.86,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_r": {
+      "gen": {
+        "wall_s": 16.3,
+        "prompt_tokens": 144,
+        "gen_tokens": 163,
+        "prefill_tok_s": 60.53,
+        "decode_tok_s": 13.82,
+        "load_s": null
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nError en UseMethod(\"months\"): \n  no applicable method for 'months' applied to an object of class \"c('integer', 'numeric')\"\nCalls: months\nEjecuciÃ³n interrumpida\n"
+    }
+  }
+}

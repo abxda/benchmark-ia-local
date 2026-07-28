@@ -1,0 +1,28 @@
+SERVIDOR gemma listo (PID 24080)
+ETAPA K: gemma-4-e4b un turno (velocidad + 6 tareas)
+[gemma-4-e4b] velocidad corto run1: decode 10.77 tok/s, prefill 60.42 tok/s
+[gemma-4-e4b] velocidad corto run2: decode 9.57 tok/s, prefill 60.56 tok/s
+[gemma-4-e4b] velocidad largo run1: decode 9.19 tok/s, prefill 69.7 tok/s
+[gemma-4-e4b] velocidad largo run2: decode 9.76 tok/s, prefill 70.74 tok/s
+[gemma-4-e4b] excel_py: PASS (ok) gen=28.6s @ 10.69 tok/s
+[gemma-4-e4b] excel_r: FAIL (error de ejecucion (rc=1): tequal, union
+
+Rows: 60 Columns: 3
+â”€â”€ Column specification â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€) gen=15.3s @ 11.03 tok/s
+[gemma-4-e4b] dash_py: PASS (ok) gen=78.5s @ 10.74 tok/s
+[gemma-4-e4b] dash_r: PASS (ok) gen=37.1s @ 10.8 tok/s
+[gemma-4-e4b] ts_py: PASS (ok) gen=61.4s @ 10.76 tok/s
+[gemma-4-e4b] ts_r: FAIL (error de ejecucion (rc=1): 
+Error en library(tseries): no hay paquete llamado 'tseries'
+EjecuciÃ³n interrumpida
+) gen=46.4s @ 10.81 tok/s
+[gemma-4-e4b] terminado -> D:\ProgramacionLocal\llm_benchmark\results\gemma-4-e4b.json
+ETAPA L: gemma-4-e4b x Zero (6 tareas)
+[gemma-4-e4b/zero] excel_py: PASS (ok) en 2806.4s
+[gemma-4-e4b/zero] excel_r: PASS (ok) en 1289.7s
+[gemma-4-e4b/zero] dash_py: PASS (ok) en 596.3s
+[gemma-4-e4b/zero] dash_r: PASS (ok) en 1635.9s
+[gemma-4-e4b/zero] ts_py: PASS (ok) en 1327.7s
+[gemma-4-e4b/zero] ts_r: PASS (ok) en 1149.0s
+[gemma-4-e4b/zero] terminado -> D:\ProgramacionLocal\llm_benchmark\results\gemma-4-e4b_zero.json
+FASE5 PIPELINE TERMINADO

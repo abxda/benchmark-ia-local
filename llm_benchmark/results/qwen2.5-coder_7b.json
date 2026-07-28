@@ -1,0 +1,115 @@
+{
+  "model": "qwen2.5-coder:7b",
+  "speed": {
+    "corto": [
+      {
+        "wall_s": 78.0,
+        "prompt_tokens": 56,
+        "gen_tokens": 512,
+        "prefill_tok_s": 41.5,
+        "decode_tok_s": 7.49,
+        "load_s": 6.1
+      },
+      {
+        "wall_s": 71.3,
+        "prompt_tokens": 56,
+        "gen_tokens": 512,
+        "prefill_tok_s": 416.8,
+        "decode_tok_s": 7.43,
+        "load_s": 0.2
+      }
+    ],
+    "largo": [
+      {
+        "wall_s": 142.4,
+        "prompt_tokens": 2370,
+        "gen_tokens": 512,
+        "prefill_tok_s": 37.27,
+        "decode_tok_s": 6.69,
+        "load_s": 0.2
+      },
+      {
+        "wall_s": 80.3,
+        "prompt_tokens": 2370,
+        "gen_tokens": 512,
+        "prefill_tok_s": 16271.1,
+        "decode_tok_s": 6.57,
+        "load_s": 0.2
+      }
+    ]
+  },
+  "tasks": {
+    "excel_py": {
+      "gen": {
+        "wall_s": 19.9,
+        "prompt_tokens": 131,
+        "gen_tokens": 106,
+        "prefill_tok_s": 39.5,
+        "decode_tok_s": 7.44,
+        "load_s": 0.2
+      },
+      "passed": false,
+      "detail": "columnas incorrectas: ['region', 'ventas']"
+    },
+    "excel_r": {
+      "gen": {
+        "wall_s": 15.6,
+        "prompt_tokens": 147,
+        "gen_tokens": 80,
+        "prefill_tok_s": 51.53,
+        "decode_tok_s": 7.62,
+        "load_s": 0.2
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nError en write_xlsx(resumen, \"reporte_r.xlsx\", sheet = \"Resumen\"): \n  el argumento no fue usado (sheet = \"Resumen\")\nEjecuciÃ³n interrumpida\n"
+    },
+    "dash_py": {
+      "gen": {
+        "wall_s": 43.6,
+        "prompt_tokens": 135,
+        "gen_tokens": 290,
+        "prefill_tok_s": 51.99,
+        "decode_tok_s": 7.49,
+        "load_s": 0.2
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "dash_r": {
+      "gen": {
+        "wall_s": 37.0,
+        "prompt_tokens": 160,
+        "gen_tokens": 236,
+        "prefill_tok_s": 50.99,
+        "decode_tok_s": 7.46,
+        "load_s": 0.2
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_py": {
+      "gen": {
+        "wall_s": 32.6,
+        "prompt_tokens": 163,
+        "gen_tokens": 202,
+        "prefill_tok_s": 51.11,
+        "decode_tok_s": 7.44,
+        "load_s": 0.2
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): l\\Programs\\Python\\Python311\\Lib\\site-packages\\pandas\\core\\indexes\\datetimes.py\", line 1442, in date_range\n    freq = to_offset(freq)\n           ^^^^^^^^^^^^^^^\n  File \"pandas/_libs/tslibs/offsets.pyx\", line 6229, in pandas._libs.tslibs.offsets.to_offset\n  File \"pandas/_libs/tslibs/offsets.pyx\", line 6352, in pandas._libs.tslibs.offsets.to_offset\n  File \"pandas/_libs/tslibs/offsets.pyx\", line 6137, in pandas._libs.tslibs.offsets.raise_invalid_freq\nValueError: Invalid frequency: M. Failed to parse with error message: ValueError(\"'M' is no longer supported for offsets. Please use 'ME' instead.\")\n"
+    },
+    "ts_r": {
+      "gen": {
+        "wall_s": 46.3,
+        "prompt_tokens": 168,
+        "gen_tokens": 305,
+        "prefill_tok_s": 52.53,
+        "decode_tok_s": 7.48,
+        "load_s": 0.2
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nError en year(min(datos$fecha)): no se pudo encontrar la funciÃ³n \"year\"\nCalls: ts\nEjecuciÃ³n interrumpida\n"
+    }
+  }
+}

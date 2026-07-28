@@ -1,0 +1,39 @@
+En esta carpeta esta el archivo itaee_hidalgo.csv, datos abiertos reales del INEGI:
+el Indicador Trimestral de la Actividad Economica Estatal (ITAEE) de Hidalgo.
+
+El archivo viene en formato ancho y hay que limpiarlo:
+- La primera columna se llama Descriptores e identifica cada serie, por ejemplo
+  "Indice de volumen fisico base 2013=100|Total".
+- Las demas columnas son periodos con el formato AAAA|Tn (trimestres) y tambien
+  AAAA|Anual (totales anuales).
+- Algunos encabezados traen marcadores de revision, por ejemplo 2020|T1 seguido de
+  la marca de revision entre signos de menor y mayor, o 2023|T1 con marca de preliminar.
+- Hay celdas vacias al final.
+
+Trabaja con la serie del renglon "Indice de volumen fisico base 2013=100|Total".
+
+Necesito que hagas lo siguiente con R:
+
+1. Extrae esa serie en formato largo, quedandote SOLO con los trimestres
+   (descarta las columnas anuales) y limpiando los marcadores de revision y
+   preliminar de los encabezados. Descarta tambien los periodos sin dato al final.
+
+2. Convierte la serie a un objeto ts trimestral (frequency = 4) que empiece en
+   el primer trimestre disponible.
+
+3. Aplica el ajuste estacional con el paquete seasonal usando seas() con la
+   configuracion automatica de X-13ARIMA-SEATS.
+
+4. Guarda itaee_hidalgo_ajustada.csv con cuatro columnas:
+   anio, trimestre, original y desestacionalizada.
+
+5. Genera comparacion.png (800x500 o mayor) con ambas series superpuestas,
+   titulo y leyenda en espanol.
+
+6. Escribe diagnostico.md explicando: cuantas observaciones tiene la serie, que
+   modelo ARIMA eligio X-13, si aplico transformacion logaritmica, y en que
+   trimestres se ve la mayor diferencia entre la serie original y la ajustada.
+
+Verifica antes de terminar que el CSV tenga el mismo numero de filas que
+observaciones tiene la serie original y que el PNG se haya creado con tamano
+mayor a cero.

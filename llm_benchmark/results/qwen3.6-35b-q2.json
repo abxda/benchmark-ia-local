@@ -1,0 +1,115 @@
+{
+  "model": "qwen3.6-35b-q2",
+  "speed": {
+    "corto": [
+      {
+        "wall_s": 37.1,
+        "prompt_tokens": 37,
+        "gen_tokens": 475,
+        "prefill_tok_s": 44.91,
+        "decode_tok_s": 13.93,
+        "load_s": null
+      },
+      {
+        "wall_s": 37.1,
+        "prompt_tokens": 37,
+        "gen_tokens": 475,
+        "prefill_tok_s": 41.08,
+        "decode_tok_s": 13.92,
+        "load_s": null
+      }
+    ],
+    "largo": [
+      {
+        "wall_s": 100.9,
+        "prompt_tokens": 2512,
+        "gen_tokens": 512,
+        "prefill_tok_s": 42.44,
+        "decode_tok_s": 12.94,
+        "load_s": null
+      },
+      {
+        "wall_s": 102.3,
+        "prompt_tokens": 2512,
+        "gen_tokens": 512,
+        "prefill_tok_s": 41.81,
+        "decode_tok_s": 12.76,
+        "load_s": null
+      }
+    ]
+  },
+  "tasks": {
+    "excel_py": {
+      "gen": {
+        "wall_s": 9.0,
+        "prompt_tokens": 111,
+        "gen_tokens": 56,
+        "prefill_tok_s": 45.57,
+        "decode_tok_s": 12.69,
+        "load_s": null
+      },
+      "passed": false,
+      "detail": "columnas incorrectas: ['region', 'ventas']"
+    },
+    "excel_r": {
+      "gen": {
+        "wall_s": 11.3,
+        "prompt_tokens": 123,
+        "gen_tokens": 91,
+        "prefill_tok_s": 46.16,
+        "decode_tok_s": 13.99,
+        "load_s": null
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nError en write_xlsx(ventas_totales, \"reporte_r.xlsx\", sheet_name = \"Resumen\"): \n  el argumento no fue usado (sheet_name = \"Resumen\")\nEjecuciÃ³n interrumpida\n"
+    },
+    "dash_py": {
+      "gen": {
+        "wall_s": 31.7,
+        "prompt_tokens": 116,
+        "gen_tokens": 373,
+        "prefill_tok_s": 47.55,
+        "decode_tok_s": 13.76,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "dash_r": {
+      "gen": {
+        "wall_s": 20.4,
+        "prompt_tokens": 136,
+        "gen_tokens": 213,
+        "prefill_tok_s": 47.35,
+        "decode_tok_s": 13.88,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_py": {
+      "gen": {
+        "wall_s": 24.5,
+        "prompt_tokens": 141,
+        "gen_tokens": 268,
+        "prefill_tok_s": 47.19,
+        "decode_tok_s": 13.79,
+        "load_s": null
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nTraceback (most recent call last):\n  File \"D:\\ProgramacionLocal\\llm_benchmark\\work\\qwen3.6-35b-q2_ts_py\\script.py\", line 10, in <module>\n    model = ExponentialSmoothing(\n            ^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\abel.coronado\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\pandas\\util\\_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\nTypeError: ExponentialSmoothing.__init__() got an unexpected keyword argument 'use_brute'\n"
+    },
+    "ts_r": {
+      "gen": {
+        "wall_s": 25.7,
+        "prompt_tokens": 144,
+        "gen_tokens": 278,
+        "prefill_tok_s": 47.9,
+        "decode_tok_s": 13.5,
+        "load_s": null
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nError en year(datos$fecha[1]): no se pudo encontrar la funciÃ³n \"year\"\nCalls: ts\nEjecuciÃ³n interrumpida\n"
+    }
+  }
+}

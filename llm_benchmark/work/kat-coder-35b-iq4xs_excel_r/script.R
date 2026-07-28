@@ -1,0 +1,5 @@
+library(writexl)
+datos <- read.csv("ventas.csv", stringsAsFactors = FALSE)
+resumen <- aggregate(ventas ~ region, data = datos, FUN = sum)
+names(resumen) <- c("region", "ventas_totales")
+write_xlsx(list(Resumen = resumen), "reporte_r.xlsx")

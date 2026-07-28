@@ -1,0 +1,115 @@
+{
+  "model": "qwen3.5:4b",
+  "speed": {
+    "corto": [
+      {
+        "wall_s": 52.0,
+        "prompt_tokens": 37,
+        "gen_tokens": 512,
+        "prefill_tok_s": 66.29,
+        "decode_tok_s": 11.75,
+        "load_s": 5.8
+      },
+      {
+        "wall_s": 45.6,
+        "prompt_tokens": 37,
+        "gen_tokens": 512,
+        "prefill_tok_s": 339.07,
+        "decode_tok_s": 11.92,
+        "load_s": 0.4
+      }
+    ],
+    "largo": [
+      {
+        "wall_s": 89.3,
+        "prompt_tokens": 2512,
+        "gen_tokens": 512,
+        "prefill_tok_s": 65.06,
+        "decode_tok_s": 10.63,
+        "load_s": 0.4
+      },
+      {
+        "wall_s": 66.7,
+        "prompt_tokens": 2512,
+        "gen_tokens": 512,
+        "prefill_tok_s": 142.39,
+        "decode_tok_s": 10.98,
+        "load_s": 0.3
+      }
+    ]
+  },
+  "tasks": {
+    "excel_py": {
+      "gen": {
+        "wall_s": 33.1,
+        "prompt_tokens": 111,
+        "gen_tokens": 329,
+        "prefill_tok_s": 69.21,
+        "decode_tok_s": 11.37,
+        "load_s": 0.4
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "excel_r": {
+      "gen": {
+        "wall_s": 24.4,
+        "prompt_tokens": 123,
+        "gen_tokens": 239,
+        "prefill_tok_s": 71.04,
+        "decode_tok_s": 11.87,
+        "load_s": 0.4
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nError en read_csv(\"ventas.csv\", col_types = cols(region = \"text\", mes = \"date\", : \n  no se pudo encontrar la funciÃ³n \"read_csv\"\nEjecuciÃ³n interrumpida\n"
+    },
+    "dash_py": {
+      "gen": {
+        "wall_s": 85.2,
+        "prompt_tokens": 116,
+        "gen_tokens": 951,
+        "prefill_tok_s": 72.32,
+        "decode_tok_s": 11.73,
+        "load_s": 0.4
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "dash_r": {
+      "gen": {
+        "wall_s": 182.2,
+        "prompt_tokens": 136,
+        "gen_tokens": 2048,
+        "prefill_tok_s": 71.53,
+        "decode_tok_s": 11.51,
+        "load_s": 0.4
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nError: se intenta usar un nombre de varible de longitud cero\nEjecuciÃ³n interrumpida\n"
+    },
+    "ts_py": {
+      "gen": {
+        "wall_s": 32.6,
+        "prompt_tokens": 141,
+        "gen_tokens": 333,
+        "prefill_tok_s": 70.85,
+        "decode_tok_s": 11.84,
+        "load_s": 0.3
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): qwen3.5_4b_ts_py\\script.py\", line 10, in <module>\n    modelo = ExponentialSmoothing(df['valor'], trend='add', seasonal='add', seasonal_periods=12, initialized_by_fit=False)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\abel.coronado\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\pandas\\util\\_decorators.py\", line 220, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\nTypeError: ExponentialSmoothing.__init__() got an unexpected keyword argument 'initialized_by_fit'\n"
+    },
+    "ts_r": {
+      "gen": {
+        "wall_s": 33.5,
+        "prompt_tokens": 144,
+        "gen_tokens": 344,
+        "prefill_tok_s": 75.49,
+        "decode_tok_s": 11.84,
+        "load_s": 0.4
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \n\nAdjuntando el paquete: 'dplyr'\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nError en ts(datos$valor, start = 1900, end = nrow(datos) + 1, frequency = 12): \n  'start' cannot be after 'end'\nEjecuciÃ³n interrumpida\n"
+    }
+  }
+}

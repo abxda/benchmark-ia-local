@@ -1,0 +1,115 @@
+{
+  "model": "gemma-4-e4b",
+  "speed": {
+    "corto": [
+      {
+        "wall_s": 50.1,
+        "prompt_tokens": 29,
+        "gen_tokens": 512,
+        "prefill_tok_s": 60.42,
+        "decode_tok_s": 10.77,
+        "load_s": null
+      },
+      {
+        "wall_s": 56.1,
+        "prompt_tokens": 29,
+        "gen_tokens": 512,
+        "prefill_tok_s": 60.56,
+        "decode_tok_s": 9.57,
+        "load_s": null
+      }
+    ],
+    "largo": [
+      {
+        "wall_s": 97.8,
+        "prompt_tokens": 2789,
+        "gen_tokens": 512,
+        "prefill_tok_s": 69.7,
+        "decode_tok_s": 9.19,
+        "load_s": null
+      },
+      {
+        "wall_s": 94.0,
+        "prompt_tokens": 2789,
+        "gen_tokens": 512,
+        "prefill_tok_s": 70.74,
+        "decode_tok_s": 9.76,
+        "load_s": null
+      }
+    ]
+  },
+  "tasks": {
+    "excel_py": {
+      "gen": {
+        "wall_s": 28.6,
+        "prompt_tokens": 110,
+        "gen_tokens": 267,
+        "prefill_tok_s": 74.35,
+        "decode_tok_s": 10.69,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "excel_r": {
+      "gen": {
+        "wall_s": 15.3,
+        "prompt_tokens": 123,
+        "gen_tokens": 128,
+        "prefill_tok_s": 77.3,
+        "decode_tok_s": 11.03,
+        "load_s": null
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): tequal, union\n\nRows: 60 Columns: 3\nâ”€â”€ Column specification â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nDelimiter: \",\"\nchr (2): region, mes\ndbl (1): ventas\n\nâ„¹ Use `spec()` to retrieve the full column specification for this data.\nâ„¹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\nError en write_xlsx(resumen_ventas, \"reporte_r.xlsx\", sheet_name = \"Resumen\"): \n  el argumento no fue usado (sheet_name = \"Resumen\")\nEjecuciÃ³n interrumpida\n"
+    },
+    "dash_py": {
+      "gen": {
+        "wall_s": 78.5,
+        "prompt_tokens": 116,
+        "gen_tokens": 804,
+        "prefill_tok_s": 76.14,
+        "decode_tok_s": 10.74,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "dash_r": {
+      "gen": {
+        "wall_s": 37.1,
+        "prompt_tokens": 134,
+        "gen_tokens": 360,
+        "prefill_tok_s": 77.84,
+        "decode_tok_s": 10.8,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_py": {
+      "gen": {
+        "wall_s": 61.4,
+        "prompt_tokens": 144,
+        "gen_tokens": 618,
+        "prefill_tok_s": 74.98,
+        "decode_tok_s": 10.76,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_r": {
+      "gen": {
+        "wall_s": 46.4,
+        "prompt_tokens": 147,
+        "gen_tokens": 458,
+        "prefill_tok_s": 77.19,
+        "decode_tok_s": 10.81,
+        "load_s": null
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nError en library(tseries): no hay paquete llamado 'tseries'\nEjecuciÃ³n interrumpida\n"
+    }
+  }
+}

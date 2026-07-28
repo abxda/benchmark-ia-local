@@ -1,0 +1,6 @@
+library(ggplot2)
+ventas <- read.csv("ventas.csv")
+ventas_region <- aggregate(ventas$ventas ~ ventas$region, data = ventas, sum)
+ventas_mes <- aggregate(ventas$ventas ~ as.character(ventas$mes), data = ventas, sum)
+ggsave("dashboard_r_barras.png", ggplot(ventas_region, aes(x = ventas$region, y = ventas$ventas)) + geom_bar(stat = "identity"), width = 8, height = 5)
+ggsave("dashboard_r_linea.png", ggplot(ventas_mes, aes(x = as.character(ventas$mes), y = ventas$ventas)) + geom_line(group = 1), width = 8, height = 5)

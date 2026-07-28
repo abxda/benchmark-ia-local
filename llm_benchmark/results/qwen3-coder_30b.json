@@ -1,0 +1,115 @@
+{
+  "model": "qwen3-coder:30b",
+  "speed": {
+    "corto": [
+      {
+        "wall_s": 86.2,
+        "prompt_tokens": 35,
+        "gen_tokens": 439,
+        "prefill_tok_s": 5.86,
+        "decode_tok_s": 9.3,
+        "load_s": 30.8
+      },
+      {
+        "wall_s": 36.5,
+        "prompt_tokens": 35,
+        "gen_tokens": 487,
+        "prefill_tok_s": 457.88,
+        "decode_tok_s": 14.34,
+        "load_s": 0.3
+      }
+    ],
+    "largo": [
+      {
+        "wall_s": 107.7,
+        "prompt_tokens": 2349,
+        "gen_tokens": 512,
+        "prefill_tok_s": 46.23,
+        "decode_tok_s": 9.38,
+        "load_s": 0.2
+      },
+      {
+        "wall_s": 51.1,
+        "prompt_tokens": 2349,
+        "gen_tokens": 512,
+        "prefill_tok_s": 23482.25,
+        "decode_tok_s": 10.51,
+        "load_s": 0.2
+      }
+    ]
+  },
+  "tasks": {
+    "excel_py": {
+      "gen": {
+        "wall_s": 11.4,
+        "prompt_tokens": 110,
+        "gen_tokens": 112,
+        "prefill_tok_s": 53.81,
+        "decode_tok_s": 16.0,
+        "load_s": 0.2
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "excel_r": {
+      "gen": {
+        "wall_s": 10.1,
+        "prompt_tokens": 126,
+        "gen_tokens": 85,
+        "prefill_tok_s": 60.97,
+        "decode_tok_s": 14.76,
+        "load_s": 0.2
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nError: Can't establish that the input is either xls or xlsx.\nEjecuciÃ³n interrumpida\n"
+    },
+    "dash_py": {
+      "gen": {
+        "wall_s": 24.2,
+        "prompt_tokens": 114,
+        "gen_tokens": 324,
+        "prefill_tok_s": 63.49,
+        "decode_tok_s": 16.15,
+        "load_s": 0.2
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "dash_r": {
+      "gen": {
+        "wall_s": 24.3,
+        "prompt_tokens": 139,
+        "gen_tokens": 319,
+        "prefill_tok_s": 63.42,
+        "decode_tok_s": 16.13,
+        "load_s": 0.2
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_py": {
+      "gen": {
+        "wall_s": 17.4,
+        "prompt_tokens": 142,
+        "gen_tokens": 209,
+        "prefill_tok_s": 62.43,
+        "decode_tok_s": 16.23,
+        "load_s": 0.2
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_r": {
+      "gen": {
+        "wall_s": 20.7,
+        "prompt_tokens": 147,
+        "gen_tokens": 262,
+        "prefill_tok_s": 66.74,
+        "decode_tok_s": 16.14,
+        "load_s": 0.2
+      },
+      "passed": true,
+      "detail": "ok"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+# Pesos de modelos y binarios de runtime: 42 GB, se descargan, no se versionan.
+# Se conservan los CSV de llama-bench: son mediciones, pesan 1 KB.
+llama_cpp/*
+!llama_cpp/*.csv
+*.gguf
+*.zip
+
+# Salidas generadas por los benchmarks. Se conserva SOLO el codigo que
+# escribieron los modelos (.py / .R): es la evidencia de calidad y pesa poco.
+# Lo demas (xlsx, png, html, copias de los CSV de entrada) se regenera al correr.
+llm_benchmark/work/**
+!llm_benchmark/work/
+!llm_benchmark/work/**/
+!llm_benchmark/work/**/*.py
+!llm_benchmark/work/**/*.R
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store
