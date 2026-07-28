@@ -27,6 +27,8 @@ posterior (+10% de decodificación gratis sobre b10088).
 | 2026-07-24 | 5 | Gemma 4 E4B (edge 4.5B ef., 5 GB) | Segundo 6/6 (con Zero), 3.6× menos RAM que el 30B; nuevo campeón de lotes |
 | 2026-07-26 | 6a | Backends iGPU: SYCL vs Vulkan vs CPU (b10107) | SYCL refutado; Vulkan brilla en sintético pero pierde el dispositivo en carga real; +10% gratis por actualizar build |
 | 2026-07-26 | 6b | gemma-4-26B-A4B (MoE 25.2B/3.8B act., 17 GB) | **6/6 agéntico en 76 min** (2.8× más rápido que el 30B); 5/6 un turno; nuevo campeón de lotes |
+| 2026-07-28 | 3060-ancla | Estreno perfil `desktop-tr3990x-rtx3060-12gb-cuda`: campeón gemma-4-26B-A4B × Zero | **6/6 · 9.1 min** — reproduce el 6/6 de laptop a ~8.4×; 3060 validada como proxy (fix justo de PATH/rbin documentado) |
+| 2026-07-28 | 3060-qwopus | Qwopus3.6-35B-A3B-Coder APEX I-Compact (17.3 GB, MoE ~3B act.) × Zero en la 3060 | **6/6 · 6.6 min** — ts_r en 49s (campeón: 194s); candidato fuerte, falta revalidar en laptop (la laptop decide) |
 
 ## Lecciones acumuladas (no repetir experimentos)
 

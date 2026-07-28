@@ -328,6 +328,68 @@ MoE 25.2B totales / **3.8B activos**, UD-Q4_K_XL de 17.0 GB, llama.cpp b10107 CP
   máxima calidad — mismo 6/6 en **un tercio del tiempo**. Si la RAM debe quedar libre,
   Gemma 4 E4B (6/6, 5 GB, 147 min) sigue siendo la opción ligera.
 
+## Perfil `desktop-tr3990x-rtx3060-12gb-cuda` — estreno y ancla (2026-07-28)
+
+> Sección de perfil NO-referencia (ver ETHOS.md): esta máquina explora y acelera;
+> las recomendaciones siguen saliendo del perfil `laptop-inegi-ultra5-32gb-1dimm`.
+
+Hardware: Threadripper 3990X (64c) · 256 GB DDR4 · RTX 3060 12 GB · Ubuntu 26.04.
+Stack: llama.cpp **b10155 CUDA**, Zero 0.5.0, mismos prompts/checkers/turnos que la laptop.
+
+### Corrida ancla: gemma-4-26B-A4B × Zero (campeón vigente)
+
+Config: UD-Q4_K_XL 17 GB, `--n-gpu-layers 999 --n-cpu-moe 22` (con escritorio abierto
+ocupando ~2.1 GB de VRAM; con GPU limpia cabe 18), ctx 32K, thinking off. 10.5/12.3 GB.
+
+| Tarea | Resultado | Tiempo |
+|---|---|---|
+| excel_py | PASS | 49.8s |
+| excel_r | PASS | 78.0s |
+| dash_py | PASS | 65.8s |
+| dash_r | PASS | 77.0s |
+| ts_py | PASS | 83.3s |
+| ts_r | PASS | 193.8s |
+| **Total** | **6/6** | **9.1 min** |
+
+Mismo 6/6 que en laptop (76 min): el ancla reproduce, la máquina solo cambia la escala
+de tiempo (~8.4×). Eso valida usar la 3060 como proxy de iteración rápida.
+
+**Arreglo justo de entorno documentado** (no toca prompts ni checkers): `bench_zero.py`
+antepone `BENCH_R_BIN` al PATH del agente; en Linux `/usr/bin` traía su propio `python3`
+que tapaba el del venv (sin pandas → excel_py fallaba por infraestructura). Fix:
+`linux/rbin/` con symlinks solo a R/Rscript. La tarea afectada se reejecutó desde cero.
+
+### Candidato: Qwopus3.6-35B-A3B-Coder APEX I-Compact (2026-07-28)
+
+Finetune de coding sobre Qwen3.6-35B-A3B (MoE, ~3B activos), Apache-2.0, quant APEX
+I-Compact de mudler (17.3 GB; precisión adaptativa por experto, head MTP en Q8_0).
+Pasó la autopsia documental; el resto del lote de candidatos del día se descartó sin
+gastar GPU (27B denso no cabe en 12 GB, un 4B con benchmarks propios en cero, MLX
+solo Apple, bases sin instruct, generación 2024 ya superada).
+
+Config: `--n-cpu-moe 20 -t 32 --no-mmap` con GPU despejada (11.6/12.3 GB), ctx 32K,
+thinking off. Velocidad: 110 tok/s prefill · **59.8 tok/s decode** (campeón: 58).
+
+| Tarea | Qwopus (APEX I-Compact) | gemma-4-26B-A4B (ancla) |
+|---|---|---|
+| excel_py | PASS 47.6s | PASS 49.8s |
+| excel_r | PASS 103.8s | PASS 78.0s |
+| dash_py | PASS 99.7s | PASS 65.8s |
+| dash_r | PASS 49.6s | PASS 77.0s |
+| ts_py | PASS 44.5s | PASS 83.3s |
+| ts_r | **PASS 48.9s** | PASS 193.8s |
+| **Total** | **6/6 · 6.6 min** | 6/6 · 9.1 min |
+
+Hallazgos: (1) cuarto 6/6 agéntico del experimento, ~27% más rápido que el campeón en
+esta máquina; (2) `ts_r` —el punto débil histórico de todos los modelos en R— salió en
+48.9s contra 193.8s del campeón, la diferencia más grande de la tabla; (3) ojo con la
+comparación de configs: el ancla corrió con `-t 16` + mmap y n-cpu-moe 22, Qwopus con
+`-t 32` + no-mmap y 20 — parte de la ventaja de tiempo puede ser infra, no modelo.
+
+**Pendiente para decidir algo** (regla ETHOS: la laptop decide): revalidar en el perfil
+`laptop-inegi-ultra5-32gb-1dimm`. El I-Compact de 17.3 GB cabe en los 32 GB de RAM de
+la laptop en CPU puro, mismo régimen que el campeón (17 GB).
+
 ## Reproducir
 
 ```
