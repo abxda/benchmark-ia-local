@@ -390,6 +390,80 @@ comparación de configs: el ancla corrió con `-t 16` + mmap y n-cpu-moe 22, Qwo
 `laptop-ref-ultra5-32gb-1dimm`. El I-Compact de 17.3 GB cabe en los 32 GB de RAM de
 la laptop en CPU puro, mismo régimen que el campeón (17 GB).
 
+## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
+
+Revalidación en `laptop-ref-ultra5-32gb-1dimm` (CPU puro, b10107, `-t 10`, ctx 32K,
+thinking off, mmap por omisión) del candidato que dio 6/6 en 6.6 min en el desktop.
+Mismo GGUF, byte a byte: `Qwopus3.6-35B-A3B-Coder-APEX-MTP-I-Compact.gguf` (17.33 GB).
+Regla ETHOS: **la laptop decide**.
+
+El build b10107, de antes del lanzamiento, carga la arquitectura MTP sin problema (15 s).
+
+### Un turno
+
+| Tarea | Qwopus | qwen3-coder:30b (campeón) | gemma-4-26B-A4B |
+|---|---|---|---|
+| excel_py | PASS 9s | PASS 11s | PASS 27s |
+| excel_r | **FAIL** 9s | FAIL 9s | PASS 20s |
+| dash_py | PASS 18s | PASS 28s | PASS 71s |
+| dash_r | PASS 24s | PASS 24s | PASS 38s |
+| ts_py | PASS 24s | PASS 22s | PASS 59s |
+| ts_r | **FAIL** 28s | **PASS** 21s | FAIL 48s |
+| **Total** | **4/6** | **5/6** | 5/6 |
+
+Decode 11.9-13.7 tok/s (campeón: 9.6-13.8) — mismo régimen, más rápido tarea por tarea,
+pero pierde `ts_r`, que el campeón sí resuelve. Ambos fallos son del modelo, no del
+harness: `write_xlsx(..., sheet_name=)` (argumento inexistente en writexl) y
+`year()` sin cargar lubridate — la lección 9, otra vez.
+
+**Ojo con la primera medición**: en frío el servidor daba 5.9 tok/s (mmap paginando los
+pesos). En caliente sube a ~14. Medir en frío habría descartado el modelo por error.
+
+### Agéntico (Zero)
+
+| Tarea | Qwopus laptop | gemma-4-26B-A4B | campeón 30B | Qwopus desktop |
+|---|---|---|---|---|
+| excel_py | PASS 9.7 min | PASS 11.2 min | PASS 14.2 min | PASS 47.6s |
+| excel_r | **FAIL 7.6 min** | PASS 11.2 min | PASS 36.8 min | PASS 103.8s |
+| dash_py | PASS 11.9 min | PASS 15.3 min | PASS 24.9 min | PASS 99.7s |
+| dash_r | PASS 12.0 min | PASS 10.2 min | PASS 23.2 min | PASS 49.6s |
+| ts_py | PASS 9.7 min | PASS 10.3 min | PASS 69.7 min | PASS 44.5s |
+| ts_r | PASS 10.2 min | PASS 18.3 min | PASS 45.0 min | PASS 48.9s |
+| **Total** | **5/6 · 61 min** | 6/6 · 76.5 min | 6/6 · 214 min | 6/6 · 6.6 min |
+
+**El 6/6 del desktop no se reproduce en la laptop.** Qwopus es el más rápido de los tres
+en la máquina de referencia (61 min contra 76.5 del campeón de lotes), pero pierde una
+tarea que los otros dos resuelven. **La recomendación no cambia: gemma-4-26B-A4B sigue
+siendo el campeón de lotes.**
+
+### Hallazgos
+
+1. **La ventaja en `ts_r` sí es del modelo, no de la GPU.** Era el hallazgo a validar:
+   10.2 min contra 18.3 del campeón de lotes y 45.0 del interactivo — 1.8× y 4.4×. La
+   dirección del desktop (4× sobre el campeón) sobrevive al cambio de máquina. En R para
+   series de tiempo, Qwopus es el mejor modelo que ha pasado por este benchmark.
+2. **El bucle agéntico rescató `ts_r` pero no `excel_r`,** y la diferencia explica el
+   límite del modo agéntico: en `ts_r` R aborta con error y el agente lo lee y corrige;
+   en `excel_r` el script **corre sin error** y produce un `.xlsx` con los datos correctos
+   en una hoja llamada `Sheet1` en vez de `Resumen`. El agente se declara exitoso.
+   Su "corrección" fue quitar el argumento que fallaba (`sheet_name=`) en vez de usar la
+   forma correcta (`write_xlsx(list(Resumen = resumen), ...)`): **eliminó el requisito en
+   lugar de cumplirlo.**
+3. **Corolario para evaluar candidatos**: el bucle agéntico solo compensa lo que el
+   intérprete reporta como error. Un modelo que falla la *especificación* sin fallar la
+   *ejecución* no se corrige solo, y un harness que juzgue por código de salida —no por
+   el entregable— lo daría por bueno. Aquí lo atrapó el checker, no el agente.
+4. **Un turno predice mal el modo agéntico**: Qwopus fue 4/6 en un turno (peor que el
+   campeón) y aun así el más rápido en agéntico. Pero también al revés: `ts_r` pasó de no
+   compilar a ser su mejor tarea.
+
+### Advertencia de método
+
+Los tiempos del desktop y de la laptop **no son comparables entre sí** más allá del orden
+de magnitud: distinto backend (CUDA vs CPU), distintos flags (`-t 32 --no-mmap` vs
+`-t 10` + mmap) y distinta contención. Lo comparable es cada modelo contra los otros
+**dentro de su propio perfil**, y eso es lo que hacen las dos tablas de arriba.
+
 ## Reproducir
 
 ```

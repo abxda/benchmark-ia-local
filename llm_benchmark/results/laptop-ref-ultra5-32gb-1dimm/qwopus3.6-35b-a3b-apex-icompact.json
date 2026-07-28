@@ -1,0 +1,116 @@
+{
+  "model": "qwopus3.6-35b-a3b-apex-icompact",
+  "profile": "laptop-ref-ultra5-32gb-1dimm",
+  "speed": {
+    "corto": [
+      {
+        "wall_s": 37.4,
+        "prompt_tokens": 37,
+        "gen_tokens": 420,
+        "prefill_tok_s": 43.67,
+        "decode_tok_s": 12.18,
+        "load_s": null
+      },
+      {
+        "wall_s": 34.7,
+        "prompt_tokens": 37,
+        "gen_tokens": 420,
+        "prefill_tok_s": 52.07,
+        "decode_tok_s": 13.19,
+        "load_s": null
+      }
+    ],
+    "largo": [
+      {
+        "wall_s": 91.1,
+        "prompt_tokens": 2512,
+        "gen_tokens": 512,
+        "prefill_tok_s": 54.51,
+        "decode_tok_s": 11.92,
+        "load_s": null
+      },
+      {
+        "wall_s": 77.0,
+        "prompt_tokens": 2512,
+        "gen_tokens": 512,
+        "prefill_tok_s": 67.18,
+        "decode_tok_s": 13.65,
+        "load_s": null
+      }
+    ]
+  },
+  "tasks": {
+    "excel_py": {
+      "gen": {
+        "wall_s": 9.1,
+        "prompt_tokens": 111,
+        "gen_tokens": 75,
+        "prefill_tok_s": 67.8,
+        "decode_tok_s": 14.34,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "excel_r": {
+      "gen": {
+        "wall_s": 9.4,
+        "prompt_tokens": 123,
+        "gen_tokens": 82,
+        "prefill_tok_s": 73.22,
+        "decode_tok_s": 14.57,
+        "load_s": null
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \n\nAdjuntando el paquete: 'dplyr'\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nError en write_xlsx(resumen, \"reporte_r.xlsx\", sheet_name = \"Resumen\"): \n  el argumento no fue usado (sheet_name = \"Resumen\")\nEjecuciÃ³n interrumpida\n"
+    },
+    "dash_py": {
+      "gen": {
+        "wall_s": 18.1,
+        "prompt_tokens": 116,
+        "gen_tokens": 214,
+        "prefill_tok_s": 70.48,
+        "decode_tok_s": 14.91,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "dash_r": {
+      "gen": {
+        "wall_s": 23.9,
+        "prompt_tokens": 136,
+        "gen_tokens": 288,
+        "prefill_tok_s": 67.07,
+        "decode_tok_s": 14.62,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_py": {
+      "gen": {
+        "wall_s": 23.9,
+        "prompt_tokens": 141,
+        "gen_tokens": 254,
+        "prefill_tok_s": 73.4,
+        "decode_tok_s": 12.78,
+        "load_s": null
+      },
+      "passed": true,
+      "detail": "ok"
+    },
+    "ts_r": {
+      "gen": {
+        "wall_s": 28.5,
+        "prompt_tokens": 144,
+        "gen_tokens": 329,
+        "prefill_tok_s": 76.99,
+        "decode_tok_s": 13.44,
+        "load_s": null
+      },
+      "passed": false,
+      "detail": "error de ejecucion (rc=1): \nError en year(datos$fecha[1]): no se pudo encontrar la funciÃ³n \"year\"\nCalls: ts\nEjecuciÃ³n interrumpida\n"
+    }
+  }
+}

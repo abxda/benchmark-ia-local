@@ -1,0 +1,30 @@
+﻿SERVIDOR Qwopus listo (PID 29828)
+HUMO razonamiento presente: False
+HUMO tokens generados: 26
+HUMO respuesta: ```r
+media_sin_na <- function(x) {
+  mean(x, na.rm = TRUE)
+}
+```
+ETAPA A: Qwopus un turno (velocidad + 6 tareas)
+[qwopus3.6-35b-a3b-apex-icompact] velocidad corto run1: decode 12.18 tok/s, prefill 43.67 tok/s
+[qwopus3.6-35b-a3b-apex-icompact] velocidad corto run2: decode 13.19 tok/s, prefill 52.07 tok/s
+[qwopus3.6-35b-a3b-apex-icompact] velocidad largo run1: decode 11.92 tok/s, prefill 54.51 tok/s
+[qwopus3.6-35b-a3b-apex-icompact] velocidad largo run2: decode 13.65 tok/s, prefill 67.18 tok/s
+[qwopus3.6-35b-a3b-apex-icompact] excel_py: PASS (ok) gen=9.1s @ 14.34 tok/s
+[qwopus3.6-35b-a3b-apex-icompact] excel_r: FAIL (error de ejecucion (rc=1): 
+
+Adjuntando el paquete: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+   ) gen=9.4s @ 14.57 tok/s
+[qwopus3.6-35b-a3b-apex-icompact] dash_py: PASS (ok) gen=18.1s @ 14.91 tok/s
+[qwopus3.6-35b-a3b-apex-icompact] dash_r: PASS (ok) gen=23.9s @ 14.62 tok/s
+[qwopus3.6-35b-a3b-apex-icompact] ts_py: PASS (ok) gen=23.9s @ 12.78 tok/s
+[qwopus3.6-35b-a3b-apex-icompact] ts_r: FAIL (error de ejecucion (rc=1): 
+Error en year(datos$fecha[1]): no se pudo encontrar la funciÃ³n "year"
+Calls: ts
+EjecuciÃ³n ) gen=28.5s @ 13.44 tok/s
+[qwopus3.6-35b-a3b-apex-icompact] terminado -> D:\ProgramacionLocal\llm_benchmark\results\laptop-ref-ultra5-32gb-1dimm\qwopus3.6-35b-a3b-apex-icompact.json
+ETAPA B: Qwopus x Zero (6 tareas agenticas)

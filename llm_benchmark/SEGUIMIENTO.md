@@ -1,7 +1,7 @@
 # Seguimiento — IA local en laptop institucional
 
 Bitácora viva del proyecto. Actualizar cada vez que se pruebe un modelo, harness o
-configuración nueva. Última actualización: **2026-07-24**.
+configuración nueva. Última actualización: **2026-07-28**.
 
 ## Estado actual (campeones por rol)
 
@@ -11,6 +11,7 @@ configuración nueva. Última actualización: **2026-07-24**.
 | Lotes desatendidos (agéntico) | **gemma-4-26B-A4B** UD-Q4_K_XL (17 GB) | Zero `exec` + llama-server, thinking off | **6/6 · 76 min** |
 | Lotes con RAM libre | Gemma 4 E4B Q4_K_M (5 GB) | Zero `exec`, thinking off | 6/6 · 2.45 h |
 | Reserva agéntica | KAT-Coder-V2.5 IQ4_XS (18.8 GB) | Cline o Zero | 5/6 · ~67-74 min |
+| Mejor en R (series de tiempo) | Qwopus3.6-35B-A3B APEX I-Compact (17.3 GB) | Zero `exec` + llama-server, thinking off | 5/6 · 61 min — `ts_r` en 10.2 min, el mejor registrado; falla `excel_r` |
 
 **Backend: solo CPU.** La iGPU quedó descartada empíricamente (fase 6a): SYCL degrada la
 decodificación y Vulkan pierde el dispositivo con prompts reales. Usar build b10107 o
@@ -29,6 +30,7 @@ posterior (+10% de decodificación gratis sobre b10088).
 | 2026-07-26 | 6b | gemma-4-26B-A4B (MoE 25.2B/3.8B act., 17 GB) | **6/6 agéntico en 76 min** (2.8× más rápido que el 30B); 5/6 un turno; nuevo campeón de lotes |
 | 2026-07-28 | 3060-ancla | Estreno perfil `desktop-tr3990x-rtx3060-12gb-cuda`: campeón gemma-4-26B-A4B × Zero | **6/6 · 9.1 min** — reproduce el 6/6 de laptop a ~8.4×; 3060 validada como proxy (fix justo de PATH/rbin documentado) |
 | 2026-07-28 | 3060-qwopus | Qwopus3.6-35B-A3B-Coder APEX I-Compact (17.3 GB, MoE ~3B act.) × Zero en la 3060 | **6/6 · 6.6 min** — ts_r en 49s (campeón: 194s); candidato fuerte, falta revalidar en laptop (la laptop decide) |
+| 2026-07-28 | 7 | Qwopus APEX I-Compact en la laptop: un turno + Zero | **4/6 un turno · 5/6 agéntico en 61 min** — no destrona a gemma (6/6). Gana en ts_r (10.2 min vs 18.3) pero pierde excel_r: entrega xlsx sin error con la hoja mal nombrada y el agente se declara exitoso |
 
 ## Lecciones acumuladas (no repetir experimentos)
 
@@ -54,10 +56,15 @@ posterior (+10% de decodificación gratis sobre b10088).
    el post original prueba los MoE 26B-A4B y 35B-A3B). Leer siempre la fuente primaria.
 11. Scripts .ps1: **escribirlos en ASCII puro** — PowerShell 5.1 los lee como ANSI y un
    guión largo se convierte en comilla, rompiendo el parser.
-12. **Los resultados se separan por perfil en la ruta, no solo en el JSON**
-   (`results/<perfil>/`). El 2026-07-28 el `gemma-4-26b-a4b_zero.json` de la laptop se
-   perdió al hacer `git pull`: el desktop usó la misma etiqueta con otras mayúsculas y
-   Windows, que no distingue mayúsculas, dejó un solo archivo. Se recuperó de 4edeb01.
+12. **Los resultados y los workdirs se separan por perfil en la ruta, no solo en el JSON**
+   (`results/<perfil>/`, `work/<perfil>/`). El 2026-07-28 el `gemma-4-26b-a4b_zero.json`
+   de la laptop se perdió al hacer `git pull`: el desktop usó la misma etiqueta con otras
+   mayúsculas y Windows, que no distingue mayúsculas, dejó un solo archivo. Se recuperó
+   de 4edeb01, igual que los scripts de gemma en `work/`.
+13. **El bucle agéntico solo corrige lo que el intérprete reporta como error** (fase 7):
+   Qwopus rescató `ts_r` (R abortaba) pero no `excel_r`, donde el script corre limpio y
+   entrega un xlsx con la hoja mal nombrada. Un fallo de especificación sin fallo de
+   ejecución no se autocorrige: lo atrapa el checker del entregable, no el agente.
 
 ## Próximos candidatos y triggers
 
@@ -96,6 +103,6 @@ python bench_cline.py <etiqueta>                    # agentico Cline (solo Pytho
 - **Runtimes/harnesses**: llama.cpp b10088 (cpu/ y vulkan/), Ollama 0.32.1,
   Cline CLI 3.0.46 (npm), Zero 0.5.0 (npm, proveedor `local-llama` → puerto 8080).
 - **Harness de benchmark**: `bench.py`, `bench_cline.py`, `bench_zero.py`,
-  `make_data.py`; resultados crudos en `results\*.json`; workdirs en `work\`.
+  `make_data.py`; resultados crudos en `results\<perfil>\*.json`; workdirs en `work\<perfil>\`.
 - **Documentos**: `RESULTADOS.md` (informe completo), `QUE_MONITOREAR.md` (radar),
   `PROPUESTA_PONENCIA.md` (evento), reporte visual HTML (Artifact).
