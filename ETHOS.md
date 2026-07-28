@@ -34,11 +34,13 @@ Ninguna de las tres es mala fe. Son la deriva natural de tener más recursos.
 
 ### 1. Todo resultado lleva su perfil de hardware
 
-Ninguna medición significa nada sin la máquina en que se tomó. Por eso `bench.py` graba el perfil dentro de cada JSON:
+Ninguna medición significa nada sin la máquina en que se tomó. Por eso `bench.py` graba el perfil dentro de cada JSON **y escribe en `results/<perfil>/`**:
 
 ```bash
 BENCH_PROFILE=workstation-rtx4090-64gb python bench.py <modelo>
 ```
+
+Las dos cosas son necesarias. Grabar el perfil solo dentro del JSON no basta, y esto no es teórico: el 2026-07-28 el resultado agéntico de gemma en la laptop (6/6, 76.5 min) **se perdió del árbol de trabajo** al hacer `git pull`. El desktop había etiquetado el mismo modelo con otras mayúsculas (`gemma-4-26B-A4B` vs `gemma-4-26b-a4b`) y en Windows, que no distingue mayúsculas, el archivo del desktop ocupó el lugar del de la laptop. Se recuperó del historial, pero la lección es la regla: **la separación de perfiles tiene que estar en la ruta, no solo en el contenido.**
 
 **Perfil de referencia — el que define el proyecto:**
 

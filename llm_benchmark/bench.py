@@ -17,7 +17,6 @@ OLLAMA = os.environ.get("BENCH_OLLAMA", "http://localhost:11434")
 BASE = Path(__file__).parent
 DATA = BASE / "data"
 WORK = BASE / "work"
-RESULTS = BASE / "results"
 RSCRIPT = os.environ.get(
     "BENCH_RSCRIPT",
     r"C:\Users\abel.coronado\AppData\Local\Programs\R\R-4.6.1\bin\Rscript.exe",
@@ -25,10 +24,15 @@ RSCRIPT = os.environ.get(
 # Identifica la maquina donde se corre: queda grabado en cada JSON de resultados
 # para que las mediciones de equipos distintos nunca se confundan entre si.
 PROFILE = os.environ.get("BENCH_PROFILE", "laptop-ref-ultra5-32gb-1dimm")
+# Los resultados se separan por perfil en carpetas distintas. No basta con grabar el
+# perfil dentro del JSON: dos maquinas que etiquetan igual un mismo modelo colisionan
+# en el nombre de archivo, y en Windows (case-insensitive) basta con que difieran en
+# mayusculas para que una sobrescriba a la otra al hacer git pull.
+RESULTS = BASE / "results" / PROFILE
 GEN_TIMEOUT = 900  # s por llamada de generacion
 EXEC_TIMEOUT = 300  # s por ejecucion de script generado
 
-RESULTS.mkdir(exist_ok=True)
+RESULTS.mkdir(parents=True, exist_ok=True)
 
 
 BACKEND = "ollama"

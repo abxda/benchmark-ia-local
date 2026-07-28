@@ -54,6 +54,10 @@ posterior (+10% de decodificación gratis sobre b10088).
    el post original prueba los MoE 26B-A4B y 35B-A3B). Leer siempre la fuente primaria.
 11. Scripts .ps1: **escribirlos en ASCII puro** — PowerShell 5.1 los lee como ANSI y un
    guión largo se convierte en comilla, rompiendo el parser.
+12. **Los resultados se separan por perfil en la ruta, no solo en el JSON**
+   (`results/<perfil>/`). El 2026-07-28 el `gemma-4-26b-a4b_zero.json` de la laptop se
+   perdió al hacer `git pull`: el desktop usó la misma etiqueta con otras mayúsculas y
+   Windows, que no distingue mayúsculas, dejó un solo archivo. Se recuperó de 4edeb01.
 
 ## Próximos candidatos y triggers
 
