@@ -1,7 +1,7 @@
 # Seguimiento — IA local en laptop institucional
 
 Bitácora viva del proyecto. Actualizar cada vez que se pruebe un modelo, harness o
-configuración nueva. Última actualización: **2026-07-28**.
+configuración nueva. Última actualización: **2026-08-10**.
 
 ## Estado actual (campeones por rol)
 
@@ -31,6 +31,7 @@ posterior (+10% de decodificación gratis sobre b10088).
 | 2026-07-28 | 3060-ancla | Estreno perfil `desktop-tr3990x-rtx3060-12gb-cuda`: campeón gemma-4-26B-A4B × Zero | **6/6 · 9.1 min** — reproduce el 6/6 de laptop a ~8.4×; 3060 validada como proxy (fix justo de PATH/rbin documentado) |
 | 2026-07-28 | 3060-qwopus | Qwopus3.6-35B-A3B-Coder APEX I-Compact (17.3 GB, MoE ~3B act.) × Zero en la 3060 | **6/6 · 6.6 min** — ts_r en 49s (campeón: 194s); candidato fuerte, falta revalidar en laptop (la laptop decide) |
 | 2026-07-28 | 7 | Qwopus APEX I-Compact en la laptop: un turno + Zero | **4/6 un turno · 5/6 agéntico en 61 min** — no destrona a gemma (6/6). Gana en ts_r (10.2 min vs 18.3) pero pierde excel_r: entrega xlsx sin error con la hoja mal nombrada y el agente se declara exitoso |
+| 2026-08-10 | 3060-muse | Muse-Glimmer-30B kquant (Meta, denso 30B multimodal, SWE-bench Verified 76% declarado) | **Descartado sin medir**: 6.2 tok/s (denso) y razonamiento imposible de apagar; con timeout de 1800 s/tarea la suite solo mediría el reloj. Requirió build nuevo de llama.cpp (arquitectura `muse_glimmer`) |
 
 ## Lecciones acumuladas (no repetir experimentos)
 
@@ -65,6 +66,12 @@ posterior (+10% de decodificación gratis sobre b10088).
    Qwopus rescató `ts_r` (R abortaba) pero no `excel_r`, donde el script corre limpio y
    entrega un xlsx con la hoja mal nombrada. Un fallo de especificación sin fallo de
    ejecución no se autocorrige: lo atrapa el checker del entregable, no el agente.
+14. **Dos filtros que descartan un candidato antes de medirlo**, sin importar sus
+   benchmarks declarados: (a) **denso ≥30B** — Muse-Glimmer-30B rinde 6.2 tok/s en la
+   3060 contra ~58 de los MoE, y en la laptop sería aún peor; (b) **razonamiento que no
+   se puede apagar** — si `--reasoning off` y `reasoning_budget:0` no lo detienen, el
+   modelo queda fuera del presupuesto (lección 3). Muse-Glimmer declara 76% en SWE-bench
+   Verified y aun así no es candidato: el techo de calidad no sirve si no cabe.
 
 ## Próximos candidatos y triggers
 
