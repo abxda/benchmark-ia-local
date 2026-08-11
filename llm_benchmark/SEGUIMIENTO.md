@@ -33,6 +33,7 @@ posterior (+10% de decodificación gratis sobre b10088).
 | 2026-07-28 | 7 | Qwopus APEX I-Compact en la laptop: un turno + Zero | **4/6 un turno · 5/6 agéntico en 61 min** — no destrona a gemma (6/6). Gana en ts_r (10.2 min vs 18.3) pero pierde excel_r: entrega xlsx sin error con la hoja mal nombrada y el agente se declara exitoso |
 | 2026-08-10 | 3060-muse | Muse-Glimmer-30B kquant (Meta, denso 30B multimodal, SWE-bench Verified 76% declarado) | **Descartado sin medir**: 6.2 tok/s (denso) y razonamiento imposible de apagar; con timeout de 1800 s/tarea la suite solo mediría el reloj. Requirió build nuevo de llama.cpp (arquitectura `muse_glimmer`) |
 | 2026-08-10 | 3060-nemotron | NVIDIA-Nemotron-3.5-Lightning-30B-A3B Q4_K_M (MoE híbrido Mamba-2, 3B act., GGUF de ggml-org) | **5/6 · 10.1 min** a 47.7 tok/s; pasa los dos filtros. Pasa `excel_r` (que Qwopus falla) y falla `ts_r` de forma insólita: genera y verifica el pronóstico, luego borra el entregable |
+| 2026-08-11 | 3060-nemotron-traza | Autopsia instrumentada con `bench_zero_trace.py` (stream-json + sesión persistida + salida completa) | El borrado **no se reprodujo** en 7 corridas; `ts_r` es inestable (6 PASS/2 FAIL, 75%) con dos modos de fallo. La suite trazada dio **6/6 · 9.8 min**: 5/6 vs 6/6 en el mismo modelo puede ser ruido (lección 15) |
 
 ## Lecciones acumuladas (no repetir experimentos)
 
@@ -73,6 +74,15 @@ posterior (+10% de decodificación gratis sobre b10088).
    se puede apagar** — si `--reasoning off` y `reasoning_budget:0` no lo detienen, el
    modelo queda fuera del presupuesto (lección 3). Muse-Glimmer declara 76% en SWE-bench
    Verified y aun así no es candidato: el techo de calidad no sirve si no cabe.
+
+15. **Una sola corrida tiene ruido: 5/6 y 6/6 pueden ser el mismo modelo.** Nemotron
+   dio 5/6 en la suite oficial y 6/6 al re-correrla instrumentada, misma máquina y misma
+   config; `ts_r` medido 8 veces salió 6 PASS / 2 FAIL (75%), con dos modos de fallo
+   distintos. Consecuencia: los veredictos de una corrida —incluidos los ya registrados,
+   como Qwopus 5/6 frente a gemma 6/6— separan modelos por un margen que puede ser
+   varianza. Antes de coronar o descartar por una tarea de diferencia, repetir la tarea
+   en disputa varias veces. Herramienta: `bench_zero_trace.py` (mismo contrato, guarda
+   traza completa y escribe a `*_zerotrace.json` para no tocar el resultado oficial).
 
 ## Próximos candidatos y triggers
 

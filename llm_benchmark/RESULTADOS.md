@@ -425,8 +425,45 @@ modo de fallo más grave que no resolver la tarea.
 
 **Advertencia de método**: esta corrida usa `llama.cpp-master` (030ebb5, 2026-08-11),
 no el b10155 del ancla y Qwopus — la arquitectura `nemotron_h` no existe en el build
-viejo. La calidad (5/6) es comparable; los minutos no del todo. Si el modelo avanza a
+viejo. La calidad es comparable; los minutos no del todo. Si el modelo avanza a
 candidato serio, re-correr el ancla sobre este mismo build antes de comparar tiempos.
+
+### Autopsia instrumentada de `ts_r` y varianza entre corridas (2026-08-11)
+
+Para investigar el borrado se escribió `bench_zero_trace.py`: importa las mismas
+`TASKS`, el mismo `agent_prompt` y el mismo checker que `bench_zero.py`, con los mismos
+`--auto high --max-turns 25`. Solo cambia la observabilidad — `--output-format
+stream-json` (el `text` muestra el resultado de `bash` pero no el comando),
+`--init-session-id` para persistir la sesión, y guarda la salida completa en vez de los
+últimos 1500 caracteres, que es exactamente por lo que se perdió la evidencia original.
+Escribe a `*_zerotrace.json`: **el 5/6 oficial no se toca**.
+
+**El borrado no se reprodujo.** En 7 corridas instrumentadas de `ts_r`, ninguna traza
+contiene `rm`, `unlink` ni `file.remove`, y el entregable sobrevivió siempre. El
+episodio original queda **sin explicación confirmada**.
+
+**Lo que sí quedó medido es que `ts_r` es inestable en este modelo:**
+
+| Corrida | Resultado | Tiempo |
+|---|---|---|
+| Suite oficial | FAIL — entregable generado y desaparecido | 103.1s |
+| Aislada #1 | PASS | 78.6s |
+| Aislada #2 (rep1) | FAIL — pronóstico con NaN | 279.9s |
+| Aisladas #3-#6 (rep2-5) | PASS ×4 | 81.7-103.2s |
+| Suite completa trazada | PASS | 127.0s |
+| **Total** | **6 PASS / 2 FAIL (75%)** | |
+
+El fallo de `rep1` sí tiene diagnóstico: el agente abandonó `script.R` y se puso a
+improvisar one-liners con `Rscript -e`, hasta que el escapado del shell convirtió
+`datos$valor` en `datos\$valor` y rompió el código. 14 comandos, 280s (3× lo normal) y
+un CSV de NaN. No es desconocimiento de R: es un bucle de recuperación sin método.
+
+**La suite completa trazada dio 6/6 · 9.8 min** (todas con su artefacto en disco). Es
+decir: el mismo modelo, la misma máquina y la misma suite dieron **5/6 y 6/6 en dos
+corridas distintas**. El resultado oficial sigue siendo el primero medido — no se
+sustituye por el mejor —, pero la conclusión honesta es que **la diferencia entre 5/6 y
+6/6 puede ser ruido**, y eso obliga a leer con cautela los veredictos de una sola
+corrida de todo el experimento (ver lección 15).
 
 ## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
 
