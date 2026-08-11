@@ -390,6 +390,44 @@ comparación de configs: el ancla corrió con `-t 16` + mmap y n-cpu-moe 22, Qwo
 `laptop-ref-ultra5-32gb-1dimm`. El I-Compact de 17.3 GB cabe en los 32 GB de RAM de
 la laptop en CPU puro, mismo régimen que el campeón (17 GB).
 
+### Candidato: NVIDIA-Nemotron-3.5-Lightning-30B-A3B Q4_K_M (2026-08-10)
+
+MoE híbrido **Mamba-2 + MoE + atención**, 30B totales / **3B activos**, GGUF oficial de
+**ggml-org** (la organización de llama.cpp). Licencia OpenMDW-1.1 (no Apache: revisar si
+alguna vez llega a recomendación institucional). NVIDIA declara SWE-bench Verified 51.6
+(BF16) / 52.8 (NVFP4) con arnés propio y recetas publicadas en NeMo Gym — más auditable
+que el 62.4 auto-reportado de Qwopus, aunque más bajo.
+
+Pasa los dos filtros de la lección 14: MoE de 3B activos y `enable_thinking` respetado
+(humo con `reasoning_content: None`). Config: Q4_K_M de 25.4 GB, `--n-cpu-moe 40 -t 32
+--no-mmap`, 10.4/12.3 GB de VRAM; con 34 no cabe. Velocidad: **47.7 tok/s decode**.
+
+| Tarea | Nemotron 3.5 Lightning | gemma-4-26B-A4B (ancla) |
+|---|---|---|
+| excel_py | PASS 68.3s | PASS 49.8s |
+| excel_r | **PASS 100.1s** | PASS 78.0s |
+| dash_py | PASS 125.9s | PASS 65.8s |
+| dash_r | PASS 119.8s | PASS 77.0s |
+| ts_py | PASS 91.6s | PASS 83.3s |
+| ts_r | **FAIL 103.1s** | PASS 193.8s |
+| **Total** | **5/6 · 10.1 min** | 6/6 · 9.1 min |
+
+**Autopsia de `ts_r` — fallo raro: produce el entregable y luego lo borra.** El log del
+agente muestra que escribió `script.R`, lo ejecutó ("Resultados guardados en
+pronostico_r.csv") y leyó de vuelta el CSV con los 12 pronósticos mensuales correctos.
+Al terminar, el workdir solo conserva los CSV de entrada: `script.R` y `pronostico_r.csv`
+no están ahí ni en ninguna otra ruta del sistema. Las dos últimas llamadas a `bash`
+devolvieron salida vacía, compatibles con un borrado. **No es fallo del arnés**: las
+otras cinco tareas de la misma corrida conservan su script y su entregable. Zero no
+guarda transcripción completa, así que el comando exacto no se pudo recuperar — queda
+como incertidumbre. Para lotes desatendidos, borrar el entregable ya verificado es un
+modo de fallo más grave que no resolver la tarea.
+
+**Advertencia de método**: esta corrida usa `llama.cpp-master` (030ebb5, 2026-08-11),
+no el b10155 del ancla y Qwopus — la arquitectura `nemotron_h` no existe en el build
+viejo. La calidad (5/6) es comparable; los minutos no del todo. Si el modelo avanza a
+candidato serio, re-correr el ancla sobre este mismo build antes de comparar tiempos.
+
 ## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
 
 Revalidación en `laptop-ref-ultra5-32gb-1dimm` (CPU puro, b10107, `-t 10`, ctx 32K,

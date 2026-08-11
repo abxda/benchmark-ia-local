@@ -1,7 +1,7 @@
 # Seguimiento — IA local en laptop institucional
 
 Bitácora viva del proyecto. Actualizar cada vez que se pruebe un modelo, harness o
-configuración nueva. Última actualización: **2026-08-10**.
+configuración nueva. Última actualización: **2026-08-11**.
 
 ## Estado actual (campeones por rol)
 
@@ -32,6 +32,7 @@ posterior (+10% de decodificación gratis sobre b10088).
 | 2026-07-28 | 3060-qwopus | Qwopus3.6-35B-A3B-Coder APEX I-Compact (17.3 GB, MoE ~3B act.) × Zero en la 3060 | **6/6 · 6.6 min** — ts_r en 49s (campeón: 194s); candidato fuerte, falta revalidar en laptop (la laptop decide) |
 | 2026-07-28 | 7 | Qwopus APEX I-Compact en la laptop: un turno + Zero | **4/6 un turno · 5/6 agéntico en 61 min** — no destrona a gemma (6/6). Gana en ts_r (10.2 min vs 18.3) pero pierde excel_r: entrega xlsx sin error con la hoja mal nombrada y el agente se declara exitoso |
 | 2026-08-10 | 3060-muse | Muse-Glimmer-30B kquant (Meta, denso 30B multimodal, SWE-bench Verified 76% declarado) | **Descartado sin medir**: 6.2 tok/s (denso) y razonamiento imposible de apagar; con timeout de 1800 s/tarea la suite solo mediría el reloj. Requirió build nuevo de llama.cpp (arquitectura `muse_glimmer`) |
+| 2026-08-10 | 3060-nemotron | NVIDIA-Nemotron-3.5-Lightning-30B-A3B Q4_K_M (MoE híbrido Mamba-2, 3B act., GGUF de ggml-org) | **5/6 · 10.1 min** a 47.7 tok/s; pasa los dos filtros. Pasa `excel_r` (que Qwopus falla) y falla `ts_r` de forma insólita: genera y verifica el pronóstico, luego borra el entregable |
 
 ## Lecciones acumuladas (no repetir experimentos)
 
