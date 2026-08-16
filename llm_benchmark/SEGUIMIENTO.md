@@ -75,7 +75,6 @@ posterior (+10% de decodificación gratis sobre b10088).
    se puede apagar** — si `--reasoning off` y `reasoning_budget:0` no lo detienen, el
    modelo queda fuera del presupuesto (lección 3). Muse-Glimmer declara 76% en SWE-bench
    Verified y aun así no es candidato: el techo de calidad no sirve si no cabe.
-
 15. **Una sola corrida tiene ruido: 5/6 y 6/6 pueden ser el mismo modelo.** Nemotron
    dio 5/6 en la suite oficial y 6/6 al re-correrla instrumentada, misma máquina y misma
    config; `ts_r` medido 8 veces salió 6 PASS / 2 FAIL (75%), con dos modos de fallo
