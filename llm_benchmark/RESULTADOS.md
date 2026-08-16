@@ -465,6 +465,49 @@ sustituye por el mejor —, pero la conclusión honesta es que **la diferencia e
 6/6 puede ser ruido**, y eso obliga a leer con cautela los veredictos de una sola
 corrida de todo el experimento (ver lección 15).
 
+### Candidato: Qwen3.8-27B UD-IQ2_XXS — el 2-bit que sí aguanta (2026-08-16)
+
+Denso híbrido (16 × (3 × Gated DeltaNet → 1 × Gated Attention), 64 capas, 27B), recién
+publicado. Se probó **a sabiendas de dos filtros en contra** (denso ~27B y lección 2:
+"2-bit descartado con evidencia"), por orden directa y porque el quant de 9 GB cabe
+entero en los 12 GB de la 3060 — el caso de uso exacto donde un denso no paga offload.
+
+Calibración medida (dato en sí mismo, confirma la lección 1):
+
+| Quant | Estrategia | Decode |
+|---|---|---|
+| UD-Q2_K_XL (10.7 GB) | auto-fit, capas a CPU | 9.9 tok/s |
+| **UD-IQ2_XXS (9.0 GB)** | **entero en GPU** | **22.2 tok/s** |
+
+En un denso, cada capa fuera de la GPU cuesta; se eligió el quant más agresivo a cambio
+de 2.2× de velocidad. Config: build 030ebb5, `--n-gpu-layers 999`, ctx 32K, -t 32,
+--no-mmap, thinking off verificado. VRAM: 11.8/12.3 GB (al límite: no abrir apps pesadas
+durante corridas).
+
+| Tarea | Qwen3.8 IQ2_XXS | gemma (mismo contexto) | Nemotron (mismo contexto) |
+|---|---|---|---|
+| excel_py | PASS 85.4s | PASS 78.6s | PASS 62.8s |
+| excel_r | PASS 96.1s | PASS 57.4s | PASS 107.2s |
+| dash_py | PASS 128.9s | PASS 75.0s | PASS 98.6s |
+| dash_r | PASS 135.4s | PASS 71.4s | PASS 94.7s |
+| ts_py | PASS 281.7s | PASS 77.2s | PASS 95.3s |
+| ts_r | PASS 214.0s | PASS 140.5s | PASS 127.0s |
+| **Total** | **6/6 · 15.7 min** | **6/6 · 8.3 min** | 6/6 · 9.8 min |
+
+Estabilidad de `ts_r` (protocolo de repeticiones, mismo que gemma/Nemotron): suite + 5
+aisladas = **5/6 PASS (83%)**, tiempos de pase 214–411 s. El fallo (rep3) quedó con traza
+completa: es la **lección 9 en estado puro** — se atascó generando las 12 fechas futuras
+en R (`as.Date + 1:12*30`, un `as.periods()` inexistente, sprintf malformado), espiral de
+one-liners `Rscript -e` hasta agotar los 25 turnos. Terminó reportando honestamente "no
+se ha ejecutado con éxito": ni fabricó ni borró nada.
+
+**Lectura:** (1) **la lección 2 necesita matiz generacional** — el 2-bit dinámico de esta
+familia ya no colapsa: 6/6 donde el Qwen3.6-35B 2-bit de julio hizo 2/6; (2) no destrona
+al campeón en esta máquina: mismo 6/6 pero 1.9× el tiempo y ninguna tarea ganada;
+(3) su nicho real es **GPUs de ~12 GB donde quepa entero** — en la laptop sin GPU un
+denso de 27B seguiría siendo inviable (lección 1); (4) estabilidad ts_r 83%, entre
+Nemotron (75%) y gemma (100%), con modo de fallo honesto.
+
 ## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
 
 Revalidación en `laptop-ref-ultra5-32gb-1dimm` (CPU puro, b10107, `-t 10`, ctx 32K,

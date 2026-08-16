@@ -1,7 +1,7 @@
 # Seguimiento — IA local en laptop institucional
 
 Bitácora viva del proyecto. Actualizar cada vez que se pruebe un modelo, harness o
-configuración nueva. Última actualización: **2026-08-11**.
+configuración nueva. Última actualización: **2026-08-16**.
 
 ## Estado actual (campeones por rol)
 
@@ -34,6 +34,7 @@ posterior (+10% de decodificación gratis sobre b10088).
 | 2026-08-10 | 3060-muse | Muse-Glimmer-30B kquant (Meta, denso 30B multimodal, SWE-bench Verified 76% declarado) | **Descartado sin medir**: 6.2 tok/s (denso) y razonamiento imposible de apagar; con timeout de 1800 s/tarea la suite solo mediría el reloj. Requirió build nuevo de llama.cpp (arquitectura `muse_glimmer`) |
 | 2026-08-10 | 3060-nemotron | NVIDIA-Nemotron-3.5-Lightning-30B-A3B Q4_K_M (MoE híbrido Mamba-2, 3B act., GGUF de ggml-org) | **5/6 · 10.1 min** a 47.7 tok/s; pasa los dos filtros. Pasa `excel_r` (que Qwopus falla) y falla `ts_r` de forma insólita: genera y verifica el pronóstico, luego borra el entregable |
 | 2026-08-11 | 3060-nemotron-traza | Autopsia instrumentada con `bench_zero_trace.py` (stream-json + sesión persistida + salida completa) | El borrado **no se reprodujo** en 7 corridas; `ts_r` es inestable (6 PASS/2 FAIL, 75%) con dos modos de fallo. La suite trazada dio **6/6 · 9.8 min**: 5/6 vs 6/6 en el mismo modelo puede ser ruido (lección 15) |
+| 2026-08-16 | 3060-qwen38 | Qwen3.8-27B UD-IQ2_XXS (denso híbrido, 2-bit, 9 GB, entero en GPU) | **6/6 · 15.7 min** a 22.2 tok/s — el 2-bit moderno ya no colapsa (matiz a lección 2, ver 16); no destrona a gemma (1.9× su tiempo); ts_r 5/6 con fallo honesto de fechas en R (lección 9) |
 
 ## Lecciones acumuladas (no repetir experimentos)
 
@@ -83,6 +84,13 @@ posterior (+10% de decodificación gratis sobre b10088).
    varianza. Antes de coronar o descartar por una tarea de diferencia, repetir la tarea
    en disputa varias veces. Herramienta: `bench_zero_trace.py` (mismo contrato, guarda
    traza completa y escribe a `*_zerotrace.json` para no tocar el resultado oficial).
+16. **La lección 2 tiene matiz generacional: el 2-bit moderno ya no colapsa.** El
+   Qwen3.6-35B UD-Q2_K_XL de julio dio 2/6; el Qwen3.8-27B UD-IQ2_XXS de agosto —quant
+   aún más agresivo— dio 6/6 en la 3060. La cuantización extrema se re-evalúa por
+   generación, no se descarta para siempre. El matiz NO toca la parte de velocidad: en
+   densos, cada capa fuera de GPU sigue costando (9.9 vs 22.2 tok/s en el mismo modelo),
+   así que el nicho del 2-bit denso es exactamente "cabe entero en la VRAM disponible" —
+   inaplicable al perfil laptop sin GPU.
 
 ## Próximos candidatos y triggers
 
