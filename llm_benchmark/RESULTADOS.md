@@ -508,6 +508,49 @@ al campeón en esta máquina: mismo 6/6 pero 1.9× el tiempo y ninguna tarea gan
 denso de 27B seguiría siendo inviable (lección 1); (4) estabilidad ts_r 83%, entre
 Nemotron (75%) y gemma (100%), con modo de fallo honesto.
 
+### Candidato: empero-ai/Qwen3.8-9B Q4_K_M — Python-primero, R inconsistente (2026-08-16)
+
+**El nombre engaña:** Qwen no publica ningún 9B en la familia 3.8 (solo 27B y 2.4T-A95B).
+Este es un **Qwen3.5-9B destilado** por empero-ai con ~70k trazas del profesor
+Qwen3.8-2.4T (ficha declara MMLU CoT 0.546→0.751 auto-reportado; GSM8K bajó 0.885→0.870;
+sin benchmarks de código). Publicado el 15-08, sin validación externa. Pasó la autopsia
+solo tras humo: la ficha dice que "cada respuesta abre con `<think>`", pero con
+`enable_thinking:false` + `--reasoning off` el thinking **sí se apaga**, incluso en tareas
+de código reales (`reasoning_content: None`, sin `<think>` en el contenido).
+
+Config: Q4_K_M 5.8 GB, **entero en GPU con holgura** (7.6/12.3 GB), build 030ebb5,
+ctx 32K, -t 32, --no-mmap. Velocidad: **53–56 tok/s**.
+
+| Tarea | 9B empero | gemma (mismo contexto) |
+|---|---|---|
+| excel_py | **PASS 35.6s** | PASS 78.6s |
+| excel_r | **FAIL** 124.1s | PASS 57.4s |
+| dash_py | **PASS 27.2s** | PASS 75.0s |
+| dash_r | PASS 61.8s | PASS 71.4s |
+| ts_py | PASS 81.6s | PASS 77.2s |
+| ts_r | **FAIL** 198.1s | PASS 140.5s |
+| **Total** | **4/6 · 8.8 min** | 6/6 · 8.3 min |
+
+Estabilidad `ts_r` (suite + 5 aisladas): **3/6 PASS (50%)** — 34.9s, 57.8s, 100.8s los
+pases; los fallos por agotar turnos. Es el modelo más inconsistente de la ronda.
+
+**Autopsias con traza completa:**
+- `excel_r`: no es desconocimiento — sabía que era `writexl`. Se atascó en un bucle de
+  entorno: intentó `install.packages('writexl')` (ya estaba instalado), lo reintentó con
+  `type='source'`, probó `openxlsx`, listó paquetes… y además su `script.R` final tenía
+  un **error lógico**: `data.frame(region=ventas$region, ventas_totales=ventas$ventas)`
+  sin agrupar — copiaba las filas en vez de sumar por región. Aunque hubiera corrido,
+  el checker lo habría tumbado.
+- `ts_r` (rep4, falla en 62s): entró en bucle inspeccionando `forecast::auto.arima` en
+  vez de escribir el pronóstico; se rindió temprano.
+
+**Lectura:** (1) **los tiempos de Python son los más rápidos de toda la ronda** — excel_py
+en 36s y dash_py en 27s, la mitad que el campeón; (2) **en R repite el patrón de los
+≤9B de la fase 1** (fallan Excel R, inconsistentes en series): la destilación mejoró
+razonamiento general, no el conocimiento de R; (3) no destrona a Gemma 4 E4B en la
+categoría pequeña (E4B: 6/6 en laptop con 5 GB); (4) reserva sobre el linaje: es un
+3.5-9B rebautizado, y el único benchmark propio no mide código.
+
 ## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
 
 Revalidación en `laptop-ref-ultra5-32gb-1dimm` (CPU puro, b10107, `-t 10`, ctx 32K,
