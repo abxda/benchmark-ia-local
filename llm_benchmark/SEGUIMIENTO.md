@@ -38,6 +38,7 @@ posterior (+10% de decodificación gratis sobre b10088).
 | 2026-08-16 | 3060-empero9b | empero-ai/Qwen3.8-9B Q4_K_M (Qwen3.5-9B destilado, 5.8 GB, entero en GPU, thinking apagable pese a la ficha) | **4/6 · 8.8 min** a 53–56 tok/s — Python los más rápidos de la ronda (excel_py 36s), pero falla excel_r y ts_r; ts_r 3/6 (50%), el más inconsistente. No destrona a Gemma 4 E4B en la categoría pequeña |
 | 2026-08-25 | 3060-e2b | Gemma 4 E2B Q4_K_M (3.1 GB, hermana pequena del campeon ligero) | **3/6 - 2.7 min** pero **el mas rapido medido: 139.6 tok/s decode / 4,739 prefill** (1.8x E4B). 3/3 en Python, **0/3 en R**, `ts_r` 0/6. Cruza la frontera de capacidad: no es una E4B mas chica |
 | 2026-08-25 | 3060-qwen08 | Qwen3.5-0.8B Q4_K_M (497 MiB) en dos configuraciones: thinking OFF y ON | **0/6 en ambas**, pero el mas rapido medido (**277.5 tok/s** decode, 8,461 prefill). Con thinking produce entregables reales que fallan por especificacion; sin thinking no entrega nada. Matiz a la leccion 3 (ver 17): pensar cuesta solo 10% mas de tiempo a esta velocidad |
+| 2026-08-25 | 3060-ornith | Ornith-1.5-9B Q4_K_M (familia nueva, MIT, denso 9.2B arq. Qwen3.5, 5.78 GB) | **4/6 - 9.0 min** a 55.2 tok/s. Falla excel_r confundiendo nombre de hoja con nombre de archivo (leccion 13) y ts_r en la suite, pero **ts_r pasa 5/5 aisladas => 83%**. No destrona a E4B (6/6) y es mas lento pese a ser mas grande |
 
 ## Lecciones acumuladas (no repetir experimentos)
 

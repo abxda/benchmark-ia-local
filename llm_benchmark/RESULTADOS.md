@@ -652,6 +652,56 @@ o sin razonamiento; (2) la frontera de capacidad quedó acotada entre este 0/6, 
 efectivos) con 3/6 y E4B (7.52B) con 6/6; (3) un benchmark binario no premia la mejora
 real que aporta el razonamiento aquí — vale registrarla cualitativamente.
 
+### Candidato: Ornith-1.5-9B Q4_K_M — sangre nueva, 4/6, muy sólido en series de tiempo (2026-08-25)
+
+Primer modelo de una **familia que el experimento no había tocado** (ornith-ai, licencia
+MIT). Surgido del radar. Señales de adopción real: 1.14M descargas del GGUF. Por dentro
+es arquitectura **Qwen3.5 densa**, 32 capas, 9.2B params — mismo peso en disco que E4B
+(5.78 GB en Q4_K_M) pero denso, no edge.
+
+**Velocidad (llama-bench, pp512/tg128, todo en GPU):**
+
+| Modelo | Tamaño | Prefill | Decode |
+|---|---|---|---|
+| Gemma 4 E4B Q4_K_M | 4.62 GiB | 2,798 | **78.1** |
+| **Ornith-1.5-9B Q4_K_M** | 5.37 GiB | 1,698 | 55.2 |
+
+Más lento que E4B pese a ocupar más: el costo de ser denso de 9.2B contra 7.52B
+efectivos. En la laptop sin GPU esa diferencia se agravaría.
+
+**Calidad: 4/6 en 9.0 min** (build 030ebb5, ctx 32K, -t 32, thinking off verificado):
+
+| Tarea | Ornith-1.5-9B | E4B (referencia, laptop) |
+|---|---|---|
+| excel_py | PASS 30.1s | PASS |
+| excel_r | **FAIL** 96.3s | PASS |
+| dash_py | PASS 82.5s | PASS |
+| dash_r | PASS 125.4s | PASS |
+| ts_py | PASS 55.5s | PASS |
+| ts_r | **FAIL** 148.9s | PASS |
+| **Total** | **4/6** | **6/6** |
+
+**Estabilidad de `ts_r`: 5/6 (83%)** — falló en la suite pero **pasó las 5 repeticiones
+aisladas** (90–195 s). Es de los mejores registros de esa tarea, por encima de Nemotron
+(75%) y muy por encima del otro 9B destilado (50%). La lección 15 en acción: por una sola
+corrida habríamos concluido que no sabe hacerla.
+
+**Autopsia de `excel_r` — confundió nombre de hoja con nombre de archivo.** El script
+dice literalmente: *"asi que se escribe como Resumen.xlsx y luego se copia a
+reporte_r.xlsx"*; ejecutó `write_xlsx(resumen, "Resumen.xlsx")` + `file.copy(...)`. Ambos
+archivos quedaron con la hoja por defecto `Sheet1`. Es **lección 13 en estado puro**: el
+script corre limpio, R no protesta, el agente se declara exitoso y solo el checker del
+entregable atrapa el fallo. El mismo modo de fallo que hundió a Qwopus en esta tarea.
+En el humo previo ya había alucinado la librería (`library(writex)`,
+`writex::write_tibble()`), pero de eso sí se recuperó: el bucle corrigió el error de
+ejecución (lección 4) y no el de especificación (lección 13).
+
+**Lectura:** (1) **no destrona a E4B**: 4/6 contra 6/6, más lento y 1.2 GB más grande;
+(2) pero es un candidato serio en R de series de tiempo — 5/6 en `ts_r` con tiempos
+estables; (3) su punto ciego es exactamente el mismo que el de Qwopus: entregar un xlsx
+sin errores con la hoja mal nombrada; (4) al ser denso, su nicho es GPU con VRAM
+suficiente, no la laptop de referencia.
+
 ## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
 
 Revalidación en `laptop-ref-ultra5-32gb-1dimm` (CPU puro, b10107, `-t 10`, ctx 32K,
