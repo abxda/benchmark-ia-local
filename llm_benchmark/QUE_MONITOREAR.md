@@ -88,7 +88,21 @@ de modelo, vengan del lab que vengan:
 ## Qué ignorar (aprendido a costo de ~30 GB de descargas)
 
 - Densos grandes "pero cuantizados chiquito" — la RAM baja, la velocidad no.
-- Cuantizaciones ≤2 bits de cualquier cosa — la calidad cae al nivel de un modelo 4-8× menor.
-- Modelos que solo rinden con razonamiento activado — localmente no hay presupuesto de tokens para pensar.
+- ~~Cuantizaciones ≤2 bits de cualquier cosa~~ — **matizado en agosto 2026** (lección 16):
+  el 2-bit dinámico de las familias nuevas ya no colapsa (Qwen3.8-27B UD-IQ2_XXS hizo 6/6
+  donde el Qwen3.6-35B 2-bit de julio hizo 2/6). Re-evaluar por generación. Lo que sigue
+  vigente: en densos, el quant chico que cabe entero en VRAM gana al grande con offload.
+- ~~Modelos que solo rinden con razonamiento activado~~ — **matizado** (lección 17): el
+  razonamiento no es inviable en local, es inviable a velocidades bajas. A 277 tok/s la
+  suite con thinking on costó solo 10% más de tiempo. Sigue siendo descarte para los
+  modelos de trabajo (20-70 tok/s), pero por presupuesto de tiempo, no por principio.
+- **Modelos cuyo razonamiento no se puede apagar** (lección 14b) — si ni `--reasoning off`
+  ni `reasoning_budget:0` lo detienen, fuera: Muse-Glimmer declaraba 76% en SWE-bench
+  Verified y se descartó sin medir.
+- **Modelos de ≤3B para esta suite** — medido en agosto: 0.75B da 0/6 y 4.65B efectivos
+  dan 3/6. Por debajo de ~7B efectivos no hay candidato a la categoría ligera.
+- **Nombres que prometen una familia a la que no pertenecen** — "Qwen3.8-9B" resultó ser
+  un Qwen3.5-9B destilado; Qwen no publica 9B en la familia 3.8. Verificar el linaje real
+  en `config.json` y en los tags `base_model` antes de descargar.
 - Formatos que requieren forks o runtimes exóticos — esperar a que lleguen a mainline.
 - Benchmarks sin scaffold comparable o reportados solo por el propio lab.

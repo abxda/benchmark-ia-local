@@ -702,6 +702,88 @@ estables; (3) su punto ciego es exactamente el mismo que el de Qwopus: entregar 
 sin errores con la hoja mal nombrada; (4) al ser denso, su nicho es GPU con VRAM
 suficiente, no la laptop de referencia.
 
+### Síntesis de la ronda de agosto: 8 candidatos, ningún nuevo campeón, mucho conocimiento
+
+Entre el 10 y el 25 de agosto de 2026 se evaluaron ocho candidatos en el perfil
+`desktop-tr3990x-rtx3060-12gb-cuda`, todos con el mismo contrato (Zero agéntico, 25
+turnos, thinking off verificado, código ejecutado y entregable validado) y —desde el
+11-08— con el arnés instrumentado `bench_zero_trace.py`, que guarda la traza completa de
+cada sesión. **Ninguno destronó a los campeones vigentes.** El valor de la ronda está en
+lo que quedó aprendido.
+
+#### Tabla comparativa (todos en la RTX 3060, build llama.cpp 030ebb5)
+
+| Modelo | Tamaño | Arquitectura | Decode | Suite | `ts_r` |
+|---|---|---|---|---|---|
+| **gemma-4-26B-A4B** (campeón) | 17 GB | MoE 3.8B act. | 69.5 | **6/6 · 8.3 min** | 6/6 (100%) |
+| Nemotron 3.5 Lightning 30B-A3B | 25.4 GB | MoE híbrido Mamba-2 | 47.7 | 6/6 · 9.8 min | 6/8 (75%) |
+| Qwen3.8-27B UD-IQ2_XXS | 9.0 GB | denso híbrido, 2-bit | 22.2 | 6/6 · 15.7 min | 5/6 (83%) |
+| **Gemma 4 E4B** (campeón ligero) | 5.0 GB | edge 7.52B ef. | 78.1 | 6/6 (laptop) | — |
+| Ornith-1.5-9B | 5.8 GB | denso 9.2B (Qwen3.5) | 55.2 | 4/6 · 9.0 min | 5/6 (83%) |
+| empero-ai/Qwen3.8-9B | 5.8 GB | Qwen3.5-9B destilado | 53–56 | 4/6 · 8.8 min | 3/6 (50%) |
+| Gemma 4 E2B | 3.1 GB | edge 4.65B ef. | 139.6 | 3/6 · 2.7 min | 0/6 (0%) |
+| Qwen3.5-0.8B | 0.5 GB | denso 0.75B | 277.5 | 0/6 · 8.0 min | 0/6 (0%) |
+| Muse-Glimmer-30B | 17 GB | denso 30B multimodal | 6.2 | descartado sin medir | — |
+
+#### Lo que quedó establecido
+
+**1. La frontera de capacidad de los modelos pequeños está localizada.** Con tres puntos
+medidos el mismo día y en las mismas condiciones: 0.75B → 0/6, 4.65B efectivos → 3/6,
+7.52B efectivos → 6/6. El salto ocurre entre E2B y E4B. **E4B es el óptimo de la
+categoría ligera** y ningún candidato de ≤6 GB se le acercó.
+
+**2. Velocidad y capacidad son inversas, y casi proporcionales.** Cada duplicación de
+parámetros efectivos cuesta aproximadamente la mitad de la velocidad: 277 → 139 → 78
+tok/s para 0.75B → 4.65B → 7.52B. No hay comida gratis en esta escala.
+
+**3. El marcador rápido engaña.** E2B "terminó la suite" en 2.7 minutos, pero eso incluye
+rendirse en 13-18 segundos en las tareas que falla. Terminar rápido no es terminar bien;
+el tiempo total solo es comparable entre modelos con el mismo marcador.
+
+**4. Los modos de fallo importan más que el marcador**, sobre todo para lotes
+desatendidos. Los observados, de más a menos peligroso:
+- **Fabricar en silencio** (gemma en un demo fuera de suite: dashboard con datos de
+  `np.random` presentado como real).
+- **Destruir el entregable ya verificado** (Nemotron en `ts_r`: generó el pronóstico
+  correcto, lo leyó, y desapareció; no reproducido en 7 intentos).
+- **Declararse exitoso con el entregable mal** (Ornith y Qwopus en `excel_r`: xlsx sin
+  error con la hoja mal nombrada — lección 13).
+- **Atascarse sin método** (empero 9B: cinco `pip install` con los errores silenciados
+  hasta reventar el contexto; Nemotron: one-liners de `Rscript -e` hasta romper el
+  escapado).
+- **Rendirse en voz alta** (Qwen3.8-27B: "no se ha ejecutado con éxito"). El más sano.
+
+**5. Dos reglas del proyecto necesitaron matiz generacional, no derogación** (lecciones
+16 y 17): el 2-bit moderno ya no colapsa la calidad, y el razonamiento no es inviable en
+local sino inviable a velocidades bajas.
+
+**6. Una sola corrida no decide** (lección 15). Nemotron dio 5/6 y 6/6 con la misma
+configuración; Ornith falló `ts_r` en la suite y la pasó 5 de 5 veces aisladas. Sin el
+protocolo de repeticiones, ambas conclusiones habrían sido erróneas.
+
+#### Ejercicio fuera de suite: generación visual (n=1, artefactos solo locales)
+
+Se probó un reto ambicioso en un solo prompt —galaxia espiral 3D procedural en HTML
+autocontenido + 24 fotogramas exportados desde Python— con tres modelos. Ninguno alcanzó
+el estándar de "impresionante": el 9B destilado no entregó nada, gemma entregó lo único
+verificable de punta a punta (esquivó una dependencia ausente escribiendo BMP a mano) y
+el 27B escribió un codificador PNG desde cero pero sus fotogramas salieron aplastados a
+una línea, y aun así se declaró exitoso. **El hallazgo transferible: ninguno abrió sus
+propios fotogramas.** La brecha para material visual no está en escribir la geometría
+sino en verificar el resultado. Consecuencia práctica para futuros retos: pedir en el
+prompt una verificación de *contenido* (que la imagen no esté vacía o plana), no solo de
+existencia de archivos.
+
+#### Estado tras la ronda
+
+- **Lotes desatendidos**: sigue `gemma-4-26B-A4B` (6/6, el más rápido en igualdad de
+  condiciones, y 6/6 en estabilidad de `ts_r`).
+- **Categoría ligera**: sigue `Gemma 4 E4B` (6/6 con 5 GB), invicta tras ocho retadores.
+- **Mejor en series de tiempo en R**: Qwopus sigue siendo el más rápido en esa tarea, con
+  Ornith-1.5-9B como alternativa estable (83%).
+- **Pendiente**: ningún candidato de esta ronda amerita revalidarse en la laptop de
+  referencia, que es la que decide.
+
 ## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
 
 Revalidación en `laptop-ref-ultra5-32gb-1dimm` (CPU puro, b10107, `-t 10`, ctx 32K,
