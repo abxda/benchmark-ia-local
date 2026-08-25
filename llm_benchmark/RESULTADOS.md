@@ -551,6 +551,57 @@ razonamiento general, no el conocimiento de R; (3) no destrona a Gemma 4 E4B en 
 categoría pequeña (E4B: 6/6 en laptop con 5 GB); (4) reserva sobre el linaje: es un
 3.5-9B rebautizado, y el único benchmark propio no mide código.
 
+### Candidato: Gemma 4 E2B Q4_K_M — el más rápido medido, pero se cae en R (2026-08-25)
+
+Hermana pequeña de Gemma 4 E4B (campeón de la categoría ligera, 6/6 en laptop). Probada
+por interés explícito en **velocidad**. Mismo quant Q4_K_M que E4B para comparación
+directa. Nomenclatura: "E2B/E4B" son parámetros efectivos por token; los totales que
+reporta llama.cpp son 4.65B vs 7.52B.
+
+**Velocidad (llama-bench, pp512/tg128, todo en GPU, RTX 3060):**
+
+| Modelo | Tamaño | Prefill | Decode |
+|---|---|---|---|
+| **Gemma 4 E2B Q4_K_M** | 2.88 GiB | **4,739 tok/s** | **139.6 tok/s** |
+| Gemma 4 E4B Q4_K_M | 4.62 GiB | 2,798 tok/s | 78.1 tok/s |
+
+**E2B es el modelo más rápido medido en todo el experimento** — 1.8× el decode de E4B,
+el doble que gemma-4-26B-A4B (69.5) y 6× el 27B denso en 2-bit (22.2). VRAM en servicio:
+3.7 GB. Coherente con la mitad de cómputo por token.
+
+**Calidad: 3/6 en 2.7 min** (build 030ebb5, ctx 32K, -t 32, thinking off verificado):
+
+| Tarea | E2B | E4B (referencia, laptop) |
+|---|---|---|
+| excel_py | PASS 25.8s | PASS |
+| excel_r | **FAIL** 18.1s | PASS |
+| dash_py | PASS 19.4s | PASS |
+| dash_r | **FAIL** 61.1s | PASS |
+| ts_py | PASS 24.7s | PASS |
+| ts_r | **FAIL** 13.0s | PASS |
+| **Total** | **3/6** | **6/6** |
+
+**Patrón nítido: 3/3 en Python, 0/3 en R.** Estabilidad de `ts_r`: **0/6** (suite + 5
+aisladas) — el único modelo del experimento que nunca la resuelve.
+
+**Autopsias con traza:**
+- `excel_r`: inventó un argumento inexistente, `write_xlsx(..., sheet="Resumen")`; writexl
+  no tiene parámetro `sheet`. Ejecutó una sola vez y **se declaró exitoso** (`status:
+  success`) sin verificar el entregable.
+- `dash_r`: escribió un `script.py` **dentro de la tarea de R** — confundió el lenguaje.
+- `ts_r`: `seq()` con argumento no numérico al construir las fechas (lección 9), sin
+  capacidad de recuperarse.
+- Integridad: `e2b-tsr-rep1` registró 5 errores de infraestructura (`fork/exec /bin/sh:
+  not a directory`). Se verificó que la suite y las otras cuatro repeticiones tienen
+  **cero**; el 3/6 y el 0/6 de `ts_r` no dependen de esa corrida.
+
+**Lectura:** (1) E2B no es "E4B pero más chica": **cruza la frontera de capacidad**. Ahorra
+1.9 GB y cuesta la mitad de la suite; (2) confirma dónde está el límite — E4B (7.52B
+efectivos) hace 6/6, E2B (4.65B) hace 3/6; (3) su nicho legítimo es **Python acotado donde
+la velocidad manda**: resuelve en 20-26 s por tarea, más rápido que cualquier otro modelo
+medido; (4) **el marcador rápido engaña**: los 2.7 min incluyen rendirse en 13-18 s en las
+tareas que falla. Terminar rápido no es terminar bien.
+
 ## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
 
 Revalidación en `laptop-ref-ultra5-32gb-1dimm` (CPU puro, b10107, `-t 10`, ctx 32K,
