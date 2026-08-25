@@ -37,6 +37,7 @@ posterior (+10% de decodificación gratis sobre b10088).
 | 2026-08-16 | 3060-qwen38 | Qwen3.8-27B UD-IQ2_XXS (denso híbrido, 2-bit, 9 GB, entero en GPU) | **6/6 · 15.7 min** a 22.2 tok/s — el 2-bit moderno ya no colapsa (matiz a lección 2, ver 16); no destrona a gemma (1.9× su tiempo); ts_r 5/6 con fallo honesto de fechas en R (lección 9) |
 | 2026-08-16 | 3060-empero9b | empero-ai/Qwen3.8-9B Q4_K_M (Qwen3.5-9B destilado, 5.8 GB, entero en GPU, thinking apagable pese a la ficha) | **4/6 · 8.8 min** a 53–56 tok/s — Python los más rápidos de la ronda (excel_py 36s), pero falla excel_r y ts_r; ts_r 3/6 (50%), el más inconsistente. No destrona a Gemma 4 E4B en la categoría pequeña |
 | 2026-08-25 | 3060-e2b | Gemma 4 E2B Q4_K_M (3.1 GB, hermana pequena del campeon ligero) | **3/6 - 2.7 min** pero **el mas rapido medido: 139.6 tok/s decode / 4,739 prefill** (1.8x E4B). 3/3 en Python, **0/3 en R**, `ts_r` 0/6. Cruza la frontera de capacidad: no es una E4B mas chica |
+| 2026-08-25 | 3060-qwen08 | Qwen3.5-0.8B Q4_K_M (497 MiB) en dos configuraciones: thinking OFF y ON | **0/6 en ambas**, pero el mas rapido medido (**277.5 tok/s** decode, 8,461 prefill). Con thinking produce entregables reales que fallan por especificacion; sin thinking no entrega nada. Matiz a la leccion 3 (ver 17): pensar cuesta solo 10% mas de tiempo a esta velocidad |
 
 ## Lecciones acumuladas (no repetir experimentos)
 
@@ -92,6 +93,14 @@ posterior (+10% de decodificación gratis sobre b10088).
    densos, cada capa fuera de GPU sigue costando (9.9 vs 22.2 tok/s en el mismo modelo),
    así que el nicho del 2-bit denso es exactamente "cabe entero en la VRAM disponible" —
    inaplicable al perfil laptop sin GPU.
+
+17. **Matiz a la leccion 3: el razonamiento no es inviable en local, es inviable a
+   velocidades bajas.** En fase 2, thinking on en el 35B a ~14 tok/s dejo la suite
+   inutilizable (8 min por tarea sin producir codigo). En el Qwen3.5-0.8B a 277 tok/s,
+   la suite completa con thinking on tardo solo **10% mas** (8.8 vs 8.0 min) y mejoro el
+   modo de fallo (de cero entregables a dos entregables con detalles mal). La regla
+   operativa sigue siendo thinking off para los modelos de trabajo (corren a 20-70
+   tok/s), pero el motivo es el presupuesto de tiempo, no el razonamiento en si.
 
 ## Próximos candidatos y triggers
 

@@ -602,6 +602,56 @@ la velocidad manda**: resuelve en 20-26 s por tarea, más rápido que cualquier 
 medido; (4) **el marcador rápido engaña**: los 2.7 min incluyen rendirse en 13-18 s en las
 tareas que falla. Terminar rápido no es terminar bien.
 
+### Piso del experimento: Qwen3.5-0.8B Q4_K_M, y el matiz a la lección 3 (2026-08-25)
+
+Modelo diminuto (752M params, **497 MiB** en Q4_K_M) probado para fijar el límite
+inferior: dónde deja de tener sentido bajar de tamaño. Se midió en **dos
+configuraciones**, siguiendo el precedente de la fase 2 (que ya reportaba "sin
+razonamiento" y "con razonamiento" por separado).
+
+**Velocidad: es el modelo más rápido medido en el experimento.**
+
+| Modelo | Tamaño | Prefill | Decode |
+|---|---|---|---|
+| **Qwen3.5-0.8B Q4_K_M** | 497 MiB | **8,461 tok/s** | **277.5 tok/s** |
+| Gemma 4 E2B Q4_K_M | 2.88 GiB | 4,739 | 139.6 |
+| Gemma 4 E4B Q4_K_M | 4.62 GiB | 2,798 | 78.1 |
+| gemma-4-26B-A4B (campeón) | 17 GB | — | 69.5 |
+
+**Calidad: 0/6 en ambas configuraciones.** VRAM en servicio: 2.4 GB.
+
+| Tarea | Thinking OFF (oficial) | Thinking ON |
+|---|---|---|
+| excel_py | FAIL — sin entregable | FAIL — **crea `reporte.xlsx`**, hoja mal nombrada |
+| excel_r | FAIL — sin entregable | FAIL — sin entregable |
+| dash_py | FAIL — sin entregable | FAIL — **crea `dashboard.html`** (1,374 bytes) |
+| dash_r | FAIL — sin entregable | FAIL — sin entregable |
+| ts_py | FAIL — sin entregable | FAIL — sin entregable |
+| ts_r | FAIL — sin entregable | FAIL — sin entregable |
+| **Total** | **0/6 · 8.0 min** | **0/6 · 8.8 min** |
+
+**El marcador no cambia, pero el modo de fallo sí.** Sin pensamiento entrega **cero
+archivos**; con pensamiento produce dos entregables reales que fallan por detalles de
+especificación. Pasa de "no sabe hacerlo" a "casi lo hace". Humo comparativo con la
+misma petición de Excel: sin pensar generó `from reportlab.lib.pagesizes A4` (error de
+sintaxis, y reportlab es para PDF) y `os.makedirs` sin importar `os`; pensando usó
+`openpyxl` y `Workbook`, las librerías correctas.
+
+**Matiz a la lección 3** (hermano del matiz de la lección 16 al 2-bit): el razonamiento
+**no es inviable en local por naturaleza, es inviable a velocidades bajas**. En la fase 2,
+activarlo en el 35B a ~14 tok/s hizo la suite inutilizable (8 min y 6,000 tokens de puro
+pensamiento sin producir código). Aquí el mismo presupuesto cuesta **~22 s**, y la suite
+completa con thinking on solo tardó **10% más** (8.8 vs 8.0 min). Por encima de ~250 tok/s
+pensar sale prácticamente gratis — y son los modelos diminutos, los que más lo necesitan,
+los que pueden pagarlo. La regla operativa sigue siendo thinking off para los modelos de
+trabajo (todos corren a 20-70 tok/s), pero el motivo es la velocidad, no el razonamiento
+en sí.
+
+**Lectura:** (1) **el piso está localizado**: 0.75B es demasiado poco para esta suite, con
+o sin razonamiento; (2) la frontera de capacidad quedó acotada entre este 0/6, E2B (4.65B
+efectivos) con 3/6 y E4B (7.52B) con 6/6; (3) un benchmark binario no premia la mejora
+real que aporta el razonamiento aquí — vale registrarla cualitativamente.
+
 ## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
 
 Revalidación en `laptop-ref-ultra5-32gb-1dimm` (CPU puro, b10107, `-t 10`, ctx 32K,
