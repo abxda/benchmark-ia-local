@@ -784,6 +784,60 @@ existencia de archivos.
 - **Pendiente**: ningún candidato de esta ronda amerita revalidarse en la laptop de
   referencia, que es la que decide.
 
+### Candidato: Ternary Bonsai 2 27B PTQ1_0 — el ternario ya corre, pero no retiene (2026-09-19)
+
+Segunda visita de la familia Bonsai al experimento. La **v1 se descartó en fase 2** por
+velocidad (2.3 tok/s en CPU de laptop: "la cuantización extrema ahorra memoria, no
+cómputo"). PrismML publica ahora **Bonsai 2 27B**, ternario {−1,0,+1} a 1.72 bits/peso
+sobre Qwen3.8-27B, y declara **98.2% de la inteligencia FP16** (84.78 promedio en 14
+benchmarks **en modo thinking**), explícitamente por encima del **IQ2_XXS (72.59)** —
+que es justo el build que nosotros medimos en **6/6**. Comparación ideal.
+
+**Infraestructura**: requiere el fork [PrismML-Eng/llama.cpp](https://github.com/PrismML-Eng/llama.cpp)
+(formatos PTQ1_0/PQ2_0 con rotación Hadamard; llama.cpp estándar puede cargar y devolver
+basura). Compilado en `/mnt/data_4tb/IA-Local/llama.cpp-prism`, etiqueta validada
+`prism-b10709-9a9394a`. Los builds del benchmark no se tocaron.
+
+**Velocidad (llama-bench, mismo binario para ambos, todo en GPU):**
+
+| Modelo | Tamaño | Prefill | Decode |
+|---|---|---|---|
+| **Bonsai 2 27B PTQ1_0** | 5.53 GiB | 276 | **27.5 tok/s** |
+| Qwen3.8-27B UD-IQ2_XXS | 8.38 GiB | **458** | 21.5 tok/s |
+
+**Calidad: 4/6 en 19.7 min** (thinking off verificado, ctx 32K, -t 32, 10.9 GB VRAM):
+
+| Tarea | Bonsai 2 ternario | Qwen3.8-27B IQ2_XXS |
+|---|---|---|
+| excel_py | PASS 153.0s | PASS 85.4s |
+| excel_r | **FAIL** 191.3s | PASS 96.1s |
+| dash_py | PASS 160.2s | PASS 128.9s |
+| dash_r | PASS 208.8s | PASS 135.4s |
+| ts_py | PASS 140.6s | PASS 281.7s |
+| ts_r | **FAIL** 325.6s | PASS 214.0s |
+| **Total** | **4/6 · 19.7 min** | **6/6 · 15.7 min** |
+
+Estabilidad `ts_r`: **3/6 (50%)** contra 5/6 (83%) del IQ2_XXS.
+
+**Autopsias:**
+- `excel_r`: **alucinó una función inexistente en español** — `ordenar(resumen, by = 1)`.
+  Además arrastró `write_xlsx(..., sheet = "Resumen")`, argumento que writexl no tiene (el
+  mismo error de E2B), ya visible en el humo previo. Inventar identificadores en el idioma
+  del prompt es un síntoma característico de pérdida por cuantización.
+- `ts_r`: agotó los 25 turnos habiendo ejecutado solo **4 comandos**. No es ignorancia:
+  es lentitud de ciclo.
+
+**Lectura:** (1) **el 98.2% no se sostiene en nuestra suite**: pierde 4/6 contra 6/6
+justamente frente al IQ2_XXS que su ficha declara superar por 12 puntos; (2) **el tok/s
+crudo no se tradujo en tiempo de reloj** — 28% más rápido generando y aun así **25% más
+lento** en la suite, porque su prefill es 40% peor y el bucle agéntico procesa prompts
+largos en cada turno. Dato transferible: *en modo agéntico manda el prefill, no el
+decode*; (3) **el ternario ya es ejecutable** — contra los 2.3 tok/s de la v1 en CPU, aquí
+da 27.5 en GPU con kernels propios: la lección 2 queda matizada también por este lado;
+(4) **advertencia honesta**: su cifra se midió con razonamiento encendido y nuestro
+contrato lo apaga. A 27.5 tok/s el thinking cae en la zona cara (lección 17), pero el
+experimento está pendiente y sería la prueba justa de su afirmación.
+
 ## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
 
 Revalidación en `laptop-ref-ultra5-32gb-1dimm` (CPU puro, b10107, `-t 10`, ctx 32K,

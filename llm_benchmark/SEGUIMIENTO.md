@@ -1,7 +1,7 @@
 # Seguimiento — IA local en laptop institucional
 
 Bitácora viva del proyecto. Actualizar cada vez que se pruebe un modelo, harness o
-configuración nueva. Última actualización: **2026-08-25**.
+configuración nueva. Última actualización: **2026-09-19**.
 
 ## Estado actual (campeones por rol)
 
@@ -39,6 +39,7 @@ posterior (+10% de decodificación gratis sobre b10088).
 | 2026-08-25 | 3060-e2b | Gemma 4 E2B Q4_K_M (3.1 GB, hermana pequena del campeon ligero) | **3/6 - 2.7 min** pero **el mas rapido medido: 139.6 tok/s decode / 4,739 prefill** (1.8x E4B). 3/3 en Python, **0/3 en R**, `ts_r` 0/6. Cruza la frontera de capacidad: no es una E4B mas chica |
 | 2026-08-25 | 3060-qwen08 | Qwen3.5-0.8B Q4_K_M (497 MiB) en dos configuraciones: thinking OFF y ON | **0/6 en ambas**, pero el mas rapido medido (**277.5 tok/s** decode, 8,461 prefill). Con thinking produce entregables reales que fallan por especificacion; sin thinking no entrega nada. Matiz a la leccion 3 (ver 17): pensar cuesta solo 10% mas de tiempo a esta velocidad |
 | 2026-08-25 | 3060-ornith | Ornith-1.5-9B Q4_K_M (familia nueva, MIT, denso 9.2B arq. Qwen3.5, 5.78 GB) | **4/6 - 9.0 min** a 55.2 tok/s. Falla excel_r confundiendo nombre de hoja con nombre de archivo (leccion 13) y ts_r en la suite, pero **ts_r pasa 5/5 aisladas => 83%**. No destrona a E4B (6/6) y es mas lento pese a ser mas grande |
+| 2026-09-19 | 3060-bonsai2 | Ternary Bonsai 2 27B PTQ1_0 (ternario 1.72 bpw sobre Qwen3.8-27B, 5.95 GB, fork PrismML) | **4/6 - 19.7 min** a 27.5 tok/s. Declara 98.2% de FP16 y superar al IQ2_XXS: en nuestra suite pierde 4/6 vs 6/6 frente a ese mismo IQ2_XXS. ts_r 3/6 (50%). Mas rapido generando pero 25% mas lento en reloj: en agentico manda el prefill (276 vs 458). Alucino `ordenar()` en espanol |
 
 ## Lecciones acumuladas (no repetir experimentos)
 
