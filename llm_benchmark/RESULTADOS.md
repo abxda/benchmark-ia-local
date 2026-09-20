@@ -838,6 +838,58 @@ da 27.5 en GPU con kernels propios: la lección 2 queda matizada también por es
 contrato lo apaga. A 27.5 tok/s el thinking cae en la zona cara (lección 17), pero el
 experimento está pendiente y sería la prueba justa de su afirmación.
 
+### Candidato: IBM Granite 4.2 8B Q4_K_M — el mejor modelo pequeño medido en la 3060 (2026-09-19)
+
+**Primer candidato surgido de una investigación profunda con evidencia de terceros en R.**
+Simon Couch publicó el 2026-09-02 ("8B LLMs can almost do basic agentic coding") que
+Granite 4.2 8B resolvió **8 de 10** ejecuciones de un refactor en R con pruebas unitarias.
+Verificación de método: el título dice *almost* y el post aclara que fue un **refactor
+simplificado**, no el helperbench estándar — un reporte de deep research lo presentó como
+"igualando a GPT-4.1", exageración que la fuente primaria no sostiene (lección 10).
+
+Denso de 8.79B, 40 capas, **Apache 2.0**, GGUF oficial de IBM (324k descargas), 5.35 GB.
+
+**Velocidad:** llama-bench con todo en GPU da **55.5 tok/s decode / 1,793 prefill**. En
+servicio con ctx 32K el KV cache no cabe entero y el auto-ajuste deja capas en CPU: baja a
+**33 tok/s**. Dato operativo: es el primer modelo de ~5 GB al que no le alcanza la VRAM
+por el KV, no por los pesos.
+
+**Calidad: 5/6 en 23.0 min** (thinking off verificado):
+
+| Tarea | Granite 4.2 8B | Ornith-1.5-9B | Gemma 4 E2B |
+|---|---|---|---|
+| excel_py | PASS 40.0s | PASS 30.1s | PASS 25.8s |
+| excel_r | **FAIL** 195.6s | FAIL 96.3s | FAIL 18.1s |
+| dash_py | PASS 355.8s | PASS 82.5s | PASS 19.4s |
+| dash_r | PASS 141.7s | PASS 125.4s | FAIL 61.1s |
+| ts_py | PASS 238.7s | PASS 55.5s | PASS 24.7s |
+| ts_r | **PASS** 409.5s | FAIL 148.9s | FAIL 13.0s |
+| **Total** | **5/6 · 23.0 min** | 4/6 · 9.0 min | 3/6 · 2.7 min |
+
+Estabilidad `ts_r`: **3/6 (50%)** — pasó en la suite y en 2 de 5 repeticiones, con tiempos
+muy largos (260–651 s).
+
+**Autopsia de `excel_r` — modo de fallo NUEVO: resuelve en un borrador y no lo transfiere
+al entregable.** En 22 comandos hizo lo que ningún otro modelo había hecho: **leyó la
+documentación** (`?write_xlsx`, `help(write_xlsx)`), experimentó en archivos temporales y
+**acertó**: tanto `tmp.xlsx` como `tmp2.xlsx` quedaron con la hoja correctamente nombrada
+`Resumen`. Pero el `script.R` final siguió llamando
+`writexl::write_xlsx(resumen, "reporte_r.xlsx", sheetName = "Resumen")` — argumento
+inexistente — y nunca portó la solución que ya había descubierto. No es ignorancia ni
+fallo silencioso: es **falta de transferencia del hallazgo al artefacto entregable**.
+
+Nota de convergencia: es el **tercer modelo de familia distinta** que inventa el mismo
+argumento en writexl (E2B: `sheet`; Bonsai 2: `sheet`; Granite: `sheet_name`/`sheetName`).
+Apoya la hipótesis estructural de que los modelos proyectan la API de openxlsx o pandas
+sobre writexl — mitigable inyectando la firma real (paquete `btw` de Posit vía MCP).
+
+**Lectura:** (1) **mejor modelo pequeño medido en este perfil**: 5/6, por encima de Ornith
+y del 9B destilado (4/6) y muy por encima de E2B (3/6); (2) **pero no destrona a Gemma 4
+E4B**, que hace 6/6 con 5 GB; (3) **el precio es el tiempo**: 23 min contra 9 de Ornith,
+por el offload del KV y por gastar muchos turnos investigando; (4) su comportamiento
+—consultar la ayuda antes de insistir— es cualitativamente el más maduro de la categoría
+ligera, y explica su 8/10 externo; le falta cerrar el ciclo.
+
 ## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
 
 Revalidación en `laptop-ref-ultra5-32gb-1dimm` (CPU puro, b10107, `-t 10`, ctx 32K,

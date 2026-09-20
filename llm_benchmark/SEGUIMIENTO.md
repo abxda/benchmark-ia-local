@@ -40,6 +40,7 @@ posterior (+10% de decodificación gratis sobre b10088).
 | 2026-08-25 | 3060-qwen08 | Qwen3.5-0.8B Q4_K_M (497 MiB) en dos configuraciones: thinking OFF y ON | **0/6 en ambas**, pero el mas rapido medido (**277.5 tok/s** decode, 8,461 prefill). Con thinking produce entregables reales que fallan por especificacion; sin thinking no entrega nada. Matiz a la leccion 3 (ver 17): pensar cuesta solo 10% mas de tiempo a esta velocidad |
 | 2026-08-25 | 3060-ornith | Ornith-1.5-9B Q4_K_M (familia nueva, MIT, denso 9.2B arq. Qwen3.5, 5.78 GB) | **4/6 - 9.0 min** a 55.2 tok/s. Falla excel_r confundiendo nombre de hoja con nombre de archivo (leccion 13) y ts_r en la suite, pero **ts_r pasa 5/5 aisladas => 83%**. No destrona a E4B (6/6) y es mas lento pese a ser mas grande |
 | 2026-09-19 | 3060-bonsai2 | Ternary Bonsai 2 27B PTQ1_0 (ternario 1.72 bpw sobre Qwen3.8-27B, 5.95 GB, fork PrismML) | **4/6 - 19.7 min** a 27.5 tok/s. Declara 98.2% de FP16 y superar al IQ2_XXS: en nuestra suite pierde 4/6 vs 6/6 frente a ese mismo IQ2_XXS. ts_r 3/6 (50%). Mas rapido generando pero 25% mas lento en reloj: en agentico manda el prefill (276 vs 458). Alucino `ordenar()` en espanol |
+| 2026-09-19 | 3060-granite | IBM Granite 4.2 8B Q4_K_M (denso 8.79B, Apache 2.0, 5.35 GB) — primer candidato salido de deep research con evidencia de terceros en R | **5/6 - 23.0 min** (55.5 tok/s en GPU pura; 33 en servicio por KV en CPU). **Mejor modelo pequeno medido en la 3060**, pero no destrona a E4B (6/6). ts_r 3/6. Modo de fallo NUEVO en excel_r: leyo la documentacion, acerto en archivos temporales y no transfirio la solucion al entregable |
 
 ## Lecciones acumuladas (no repetir experimentos)
 
@@ -103,6 +104,14 @@ posterior (+10% de decodificación gratis sobre b10088).
    modo de fallo (de cero entregables a dos entregables con detalles mal). La regla
    operativa sigue siendo thinking off para los modelos de trabajo (corren a 20-70
    tok/s), pero el motivo es el presupuesto de tiempo, no el razonamiento en si.
+
+18. **Resolver en un borrador no es entregar** (Granite 4.2 8B, `excel_r`): el modelo
+   leyo `?write_xlsx`, experimento en `tmp.xlsx`/`tmp2.xlsx` y **acerto ahi** la hoja
+   `Resumen`, pero su `script.R` final conservo el argumento inventado y nunca porto la
+   solucion. Distinto del fallo silencioso (leccion 13): aqui el modelo SI descubrio la
+   respuesta correcta. Al revisar trazas, comparar lo que el modelo aprendio con lo que
+   dejo en el entregable; y en prompts de tareas, pedir explicitamente que el archivo
+   final refleje lo verificado.
 
 ## Próximos candidatos y triggers
 
