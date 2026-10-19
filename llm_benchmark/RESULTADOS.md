@@ -890,6 +890,60 @@ por el offload del KV y por gastar muchos turnos investigando; (4) su comportami
 —consultar la ayuda antes de insistir— es cualitativamente el más maduro de la categoría
 ligera, y explica su 8/10 externo; le falta cerrar el ciclo.
 
+### Candidato: Ternary Bonsai 2 9B PTQ1_0 — un 9B en 2 GB que inventa APIs en ambos lenguajes (2026-10-18)
+
+PrismML publicó el 14-15 de octubre tamaños pequeños de Bonsai 2 (9B, 4B, 2B). El 9B
+deriva de **Qwen3.5-9B** (arquitectura intacta) y pesa **2.00 GB** en PTQ1_0 — menos de la
+mitad que Gemma 4 E4B (5.0 GB), el campeón de la categoría ligera. La ficha **no declara
+ningún benchmark de calidad**, solo la reducción de tamaño. Requiere el fork actualizado
+`prism-b10776-d00e252` (recompilado en `llama.cpp-prism` con el mismo arreglo de enlazado
+documentado). Razonamiento apagado siguiendo la guía oficial del fabricante: servidor en
+`--reasoning auto` + `enable_thinking:false` (verificado: `reasoning_content: None`).
+
+Nota sobre el 27B: sus pesos **no cambiaron** desde nuestra medición (el GGUF es del
+17-09); lo publicado después es una página de problemas conocidos que reconoce como
+"limitación del modelo" las llamadas a herramientas mal formadas y el reprocesamiento de
+contexto en bucles agénticos — justo lo que lo hundió. El 4/6 del 27B sigue vigente.
+
+**Velocidad (llama-bench, todo en GPU):**
+
+| Modelo | Tamaño | Prefill | Decode |
+|---|---|---|---|
+| **Bonsai 2 9B PTQ1_0** | 1.85 GiB | 1,766 | **119.3 tok/s** |
+| Gemma 4 E4B Q4_K_M | 4.62 GiB | 2,798 | 78.1 |
+| Granite 4.2 8B Q4_K_M | 4.98 GiB | 1,793 | 55.5 |
+
+**Calidad: 2/6 en 7.8 min.** `ts_r`: **0/6**.
+
+| Tarea | Bonsai 2 9B | Granite 4.2 8B | Gemma 4 E2B |
+|---|---|---|---|
+| excel_py | PASS 53.8s | PASS | PASS |
+| excel_r | FAIL 46.0s | FAIL | FAIL |
+| dash_py | **FAIL** 86.9s | PASS | PASS |
+| dash_r | PASS 79.0s | PASS | FAIL |
+| ts_py | **FAIL** 111.0s | PASS | PASS |
+| ts_r | FAIL 89.6s | PASS | FAIL |
+| **Total** | **2/6** | 5/6 | 3/6 |
+
+**Autopsias — la firma de la pérdida por cuantización extrema, ahora también en Python:**
+- **Humo**: le pedí código R y respondió en **Python** con `import writexl as xl` — importó
+  un paquete de R como librería de Python.
+- `ts_py`: inventó un argumento, `ExponentialSmoothing(..., validation_periods=...)`, que
+  statsmodels no tiene.
+- `dash_py`: especificación de subplots de plotly inválida (tipos de traza mezclados sin
+  `specs`), y aun así **se declaró exitoso** describiendo un script que no generó el
+  entregable; además leyó mal los datos ("4 regiones" en un archivo de 5).
+- `ts_r`: usó `forecast$time`, atributo inexistente → fechas y pronóstico NaN.
+
+**Lectura:** (1) **el ternario no escala hacia abajo**: el 9B ternario (2 GB) rinde por
+debajo de E2B en Q4 (3/6 con 3.1 GB y la mitad de parámetros efectivos) — los parámetros
+nominales no compensan 1.75 bits por peso; (2) en la familia Bonsai 2 el patrón es
+consistente en los dos tamaños medidos: **inventa identificadores y argumentos** (`ordenar()`
+en el 27B, `validation_periods` y `forecast$time` en el 9B), y en el 9B ya no se limita a R;
+(3) es **el modelo más rápido de su tamaño** que hemos medido (119 tok/s, contexto de 32K
+entero en GPU con 3.9 GB), así que el cuello no es el runtime sino la retención de calidad;
+(4) no amenaza a Gemma 4 E4B.
+
 ## Fase 7 - Qwopus en el perfil de referencia: el candidato no destrona (2026-07-28)
 
 Revalidación en `laptop-ref-ultra5-32gb-1dimm` (CPU puro, b10107, `-t 10`, ctx 32K,

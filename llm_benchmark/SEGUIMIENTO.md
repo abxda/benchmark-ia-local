@@ -1,7 +1,7 @@
 # Seguimiento — IA local en laptop institucional
 
 Bitácora viva del proyecto. Actualizar cada vez que se pruebe un modelo, harness o
-configuración nueva. Última actualización: **2026-09-19**.
+configuración nueva. Última actualización: **2026-10-18**.
 
 ## Estado actual (campeones por rol)
 
@@ -41,6 +41,7 @@ posterior (+10% de decodificación gratis sobre b10088).
 | 2026-08-25 | 3060-ornith | Ornith-1.5-9B Q4_K_M (familia nueva, MIT, denso 9.2B arq. Qwen3.5, 5.78 GB) | **4/6 - 9.0 min** a 55.2 tok/s. Falla excel_r confundiendo nombre de hoja con nombre de archivo (leccion 13) y ts_r en la suite, pero **ts_r pasa 5/5 aisladas => 83%**. No destrona a E4B (6/6) y es mas lento pese a ser mas grande |
 | 2026-09-19 | 3060-bonsai2 | Ternary Bonsai 2 27B PTQ1_0 (ternario 1.72 bpw sobre Qwen3.8-27B, 5.95 GB, fork PrismML) | **4/6 - 19.7 min** a 27.5 tok/s. Declara 98.2% de FP16 y superar al IQ2_XXS: en nuestra suite pierde 4/6 vs 6/6 frente a ese mismo IQ2_XXS. ts_r 3/6 (50%). Mas rapido generando pero 25% mas lento en reloj: en agentico manda el prefill (276 vs 458). Alucino `ordenar()` en espanol |
 | 2026-09-19 | 3060-granite | IBM Granite 4.2 8B Q4_K_M (denso 8.79B, Apache 2.0, 5.35 GB) — primer candidato salido de deep research con evidencia de terceros en R | **5/6 - 23.0 min** (55.5 tok/s en GPU pura; 33 en servicio por KV en CPU). **Mejor modelo pequeno medido en la 3060**, pero no destrona a E4B (6/6). ts_r 3/6. Modo de fallo NUEVO en excel_r: leyo la documentacion, acerto en archivos temporales y no transfirio la solucion al entregable |
+| 2026-10-18 | 3060-bonsai2-9b | Ternary Bonsai 2 9B PTQ1_0 (Qwen3.5-9B ternario, 2.0 GB, fork prism-b10776) | **2/6 - 7.8 min** a 119.3 tok/s (el mas rapido de su tamano). ts_r 0/6. Inventa argumentos y atributos tambien en Python (validation_periods, forecast$time) y en el humo respondio en Python a una peticion de R. El ternario no escala hacia abajo: rinde menos que E2B en Q4 |
 
 ## Lecciones acumuladas (no repetir experimentos)
 
